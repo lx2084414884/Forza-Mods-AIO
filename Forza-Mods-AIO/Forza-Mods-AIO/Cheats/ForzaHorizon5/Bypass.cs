@@ -30,7 +30,7 @@ public class Bypass : CheatsUtilities, ICheatsBase
         _crcFuncAddress = 0;
         CrcFuncDetourAddress = 0;
 
-        const string sig = "E8 ? ? ? ? 48 83 C4 ? 5F 5B C3 CC CC CC 48 89";
+        const string sig = "E8 ? ? ? ? 48 83 C4 ? 5F 5B C3 CC CC CC ? ? ? ? ? ? ? 74 ? ? ? ? ? ? 48";
         _crcFuncAddress = await SmartAobScan(sig);
         
         BypassDebug.DebugInfoReports.Add(new DebugInfoReport($"Address: {_crcFuncAddress:X}"));

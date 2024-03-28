@@ -409,7 +409,7 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
             return;
         }
         
-        ShowError("Unbreakable skill score", sig);
+        ShowError("Remove build cap", sig);
     }
     
     public void Cleanup()

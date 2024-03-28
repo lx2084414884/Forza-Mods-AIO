@@ -1,5 +1,6 @@
 ﻿using Forza_Mods_AIO.Resources;
 using Memory.Types;
+using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
@@ -19,9 +20,9 @@ public class Sql : CheatsUtilities, ICheatsBase
         if (CDatabaseAddress > 0)
         {
             var relativeAddress = CDatabaseAddress + 0x6 + 0x3;
-            var relative = Resources.Memory.GetInstance().ReadMemory<int>(relativeAddress);
+            var relative = GetInstance().ReadMemory<int>(relativeAddress);
             var pCDataBaseAddress = CDatabaseAddress + (nuint)relative + 0x6 + 0x7;
-            _ptr = Resources.Memory.GetInstance().ReadMemory<nuint>(pCDataBaseAddress);
+            _ptr = GetInstance().ReadMemory<nuint>(pCDataBaseAddress);
             return;
         }
 
@@ -31,7 +32,7 @@ public class Sql : CheatsUtilities, ICheatsBase
     private static nuint GetVirtualFunctionPtr(nuint ptr, int index)
     {
         var pVtableBytes = new byte[8];
-        var procHandle = Resources.Memory.GetInstance().MProc.Handle;
+        var procHandle = GetInstance().MProc.Handle;
         Imps.ReadProcessMemory(procHandle, ptr, pVtableBytes, (nuint)pVtableBytes.Length, nint.Zero);
 
         var pVtable = (nuint)BitConverter.ToInt64(pVtableBytes, 0);
@@ -43,7 +44,8 @@ public class Sql : CheatsUtilities, ICheatsBase
     
     public Task Query(string command)
     {
-        var procHandle = Resources.Memory.GetInstance().MProc.Handle;
+        var memory = GetInstance();
+        var procHandle = memory.MProc.Handle;
 
         var rcx = _ptr;
         const int virtualFunctionIndex = 9;
@@ -62,11 +64,14 @@ public class Sql : CheatsUtilities, ICheatsBase
             r8Bytes[7], 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00, callBytes[0], callBytes[1], callBytes[2], callBytes[3],
             callBytes[4], callBytes[5], callBytes[6], callBytes[7]
         ];
-      
-        Resources.Memory.GetInstance().WriteStringMemory(r8, command + "\0");
-        Resources.Memory.GetInstance().WriteArrayMemory(shellCodeAddress, shellCode);
+        
+        memory.WriteStringMemory(r8, command + "\0");
+        memory.WriteArrayMemory(shellCodeAddress, shellCode);
+        memory.WriteArrayMemory(callFunction + 41, new byte[] { 0xE9, 0xB6, 0x00, 0x00, 0x00, 0x90 });
         var thread = Imports.CreateRemoteThread(procHandle, 0, 0, shellCodeAddress, rcx, 0, out _);
         _ = Imports.WaitForSingleObject(thread, int.MaxValue);
+        Imports.CloseHandle(thread);
+        memory.WriteArrayMemory(callFunction + 41, new byte[] { 0x0F, 0x85, 0xB5, 0x00, 0x00, 0x00 });
         Free(shellCodeAddress);
         Free(r8);
         Free(rdx);
