@@ -20,6 +20,7 @@
         <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DebugType>portable</DebugType>
+        <AssemblyName>1ef2b27c-8c4e-4d95-befe-488921eeffb1</AssemblyName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
