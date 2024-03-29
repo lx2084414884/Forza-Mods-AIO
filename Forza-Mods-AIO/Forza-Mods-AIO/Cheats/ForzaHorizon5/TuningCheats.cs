@@ -40,8 +40,8 @@ public static class TuningOffsets
     public const uint RimSizeRearOffset = 0x7DC;
     public const uint RimRadiusRearOffset = 0x7E4;
     
-    public const uint FinalDriveOffset = 0x125C;
-    public const uint ReverseGearOffset = 0x10B8;
+    public const uint FinalDriveOffset = 0x108C;
+    public const uint ReverseGearOffset = 0x598;
     public const uint FirstGearOffset = ReverseGearOffset + 1 * 20;
     public const uint SecondGearOffset = ReverseGearOffset + 2 * 20;
     public const uint ThirdGearOffset = ReverseGearOffset + 3 * 20;
