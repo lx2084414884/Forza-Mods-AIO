@@ -11,7 +11,6 @@ public partial class AutoshowViewModel : ObservableObject
     private bool _uiElementsEnabled = true;
     
     private static Sql SqlFh5 => GetClass<Sql>();
-    
 
     [RelayCommand]
     private async Task ExecuteSql(object parameter)
@@ -22,22 +21,12 @@ public partial class AutoshowViewModel : ObservableObject
         }
         
         UiElementsEnabled = false;
-        if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
-        {
-            await GetClass<Bypass>().DisableCrcChecks();
-        }
-
-        if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
-        {
-            goto SkipQuerying;
-        }
-        
-        if (SqlFh5.CDatabaseAddress == 0)
+        if (!SqlFh5.WereScansSuccessful)
         {
             await SqlFh5.SqlExecAobScan();
         }
 
-        if (SqlFh5.CDatabaseAddress == 0)
+        if (!SqlFh5.WereScansSuccessful)
         {
             goto SkipQuerying;
         }

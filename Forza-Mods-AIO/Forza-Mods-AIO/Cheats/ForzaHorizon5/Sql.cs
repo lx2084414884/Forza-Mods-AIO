@@ -1,28 +1,41 @@
 ﻿using Forza_Mods_AIO.Resources;
 using Memory.Types;
+using static Forza_Mods_AIO.Resources.Cheats;
 using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
 public class Sql : CheatsUtilities, ICheatsBase
 {
-    public UIntPtr CDatabaseAddress;
-    private UIntPtr _ptr;
+    private UIntPtr _cDatabaseAddress, _ptr;
+    public bool WereScansSuccessful;
 
     public async Task SqlExecAobScan()
     {
-        CDatabaseAddress = 0;
+        WereScansSuccessful = false;
+        _cDatabaseAddress = 0;
         _ptr = 0;
+        
+        if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+        {
+            await GetClass<Bypass>().DisableCrcChecks();
+        }
+
+        if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+        {
+            return;
+        }
 
         const string sig = "0F 84 ? ? ? ? 48 8B 35 ? ? ? ? 48 85 F6 74";
-        CDatabaseAddress = await SmartAobScan(sig);
+        _cDatabaseAddress = await SmartAobScan(sig);
 
-        if (CDatabaseAddress > 0)
+        if (_cDatabaseAddress > 0)
         {
-            var relativeAddress = CDatabaseAddress + 0x6 + 0x3;
+            var relativeAddress = _cDatabaseAddress + 0x6 + 0x3;
             var relative = GetInstance().ReadMemory<int>(relativeAddress);
-            var pCDataBaseAddress = CDatabaseAddress + (nuint)relative + 0x6 + 0x7;
+            var pCDataBaseAddress = _cDatabaseAddress + (nuint)relative + 0x6 + 0x7;
             _ptr = GetInstance().ReadMemory<nuint>(pCDataBaseAddress);
+            WereScansSuccessful = true;
             return;
         }
 
@@ -84,6 +97,7 @@ public class Sql : CheatsUtilities, ICheatsBase
 
     public void Reset()
     {
+        WereScansSuccessful = false;
         var fields = typeof(Sql).GetFields().Where(f => f.FieldType == typeof(UIntPtr));
         foreach (var field in fields)
         {
