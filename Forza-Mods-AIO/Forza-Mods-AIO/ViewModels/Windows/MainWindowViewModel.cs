@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Management;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml.Linq;
@@ -107,8 +108,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         CurrentView = Resources.Pages.GetPage(typeof(AioInfo));
 
-        Task.Run(Attach);      
-        
+        SetupAttach();
         _isInitialized = true;
     }
     
@@ -146,51 +146,66 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
     
-    private void Attach()
+    private void SetupAttach()
     {
-        var gamesDictionary = new Dictionary<string, string>
+        string[] processNames = ["forzahorizon5.exe", "forzahorizon4.exe"];
+        if (LoopProcesses(processNames))
         {
-            { "Forza Horizon 4", "forzahorizon4" },
-            { "Forza Horizon 5", "forzahorizon5" },
-            { "Forza Motorsport 8", "forza_gaming.desktop.x64_release_final" }
-        };
-        
-        var currentOpen = string.Empty;
-        while (true)
+            SetupExit();
+        }
+
+        var watcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"));
+        watcher.EventArrived += (_, e) =>
         {
-            Task.Delay(Attached ? 1000 : 500).Wait();
-            var result = Mem.GetProcIdFromName(currentOpen);
-            
-            switch (Attached)
+            if (Attached)
             {
-                case true when result <= 0:
-                {
-                    Attached = false;
-                    AttachedText = NotAttachedText;
-                    CurrentView = Resources.Pages.GetPage(typeof(AioInfo));
-                    Resources.Pages.Clear();
-                    CleanClasses();
-                    break;
-                }
-                case true:
-                {
-                    continue;
-                }
+                return;
+            }
+            
+            var name = e.NewEvent.Properties["ProcessName"].Value.ToString()?.ToLower();
+            if (name == null)
+            {
+                return;
             }
 
-            var element = gamesDictionary.FirstOrDefault(element =>
-                GetInstance().OpenProcess(element.Value) == Mem.OpenProcessResults.Success);
-            
-            if (EqualityComparer<KeyValuePair<string, string>>.Default.Equals(element, default))
+            if (processNames.All(processName => name != processName)) return;
+            if (!LoopProcesses(processNames))
             {
-                continue;
+                return;
             }
-            
-            currentOpen = element.Value;
-            Task.Run(() => GvpMaker(element.Key));
+
+            SetupExit();
+        };
+        
+        watcher.Start();
+    }
+
+    private bool LoopProcesses(IEnumerable<string> processNames)
+    {
+        Attached = false;
+        
+        foreach (var processName in processNames)
+        {
+            if (GetInstance().OpenProcess(processName) != Mem.OpenProcessResults.Success) continue;
+            GvpMaker(processName);
             Attached = true;
+            break;
         }
-        // ReSharper disable once FunctionNeverReturns
+
+        return Attached;
+    }
+
+    private void SetupExit()
+    {
+        GetInstance().MProc.Process.EnableRaisingEvents = true;
+        GetInstance().MProc.Process.Exited += (_, _) =>
+        {
+            Attached = false;
+            AttachedText = NotAttachedText;
+            CurrentView = Resources.Pages.GetPage(typeof(AioInfo));
+            Resources.Pages.Clear();
+            CleanClasses();
+        };
     }
 
     private static void CleanClasses()
@@ -244,7 +259,6 @@ public partial class MainWindowViewModel : ObservableObject
         {
             "Forza Horizon 4" => GameVerPlat.GameType.Fh4,
             "Forza Horizon 5" => GameVerPlat.GameType.Fh5,
-            "Forza Motorsport 8" => GameVerPlat.GameType.Fm8,
             _ => GameVerPlat.GameType.None
         };
     }

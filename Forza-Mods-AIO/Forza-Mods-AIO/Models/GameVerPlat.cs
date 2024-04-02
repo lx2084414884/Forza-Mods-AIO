@@ -23,7 +23,6 @@ public class GameVerPlat(string name, string platform, string update,GameVerPlat
     {
         None = 0,
         Fh4,
-        Fh5,
-        Fm8
+        Fh5
     }
 }
