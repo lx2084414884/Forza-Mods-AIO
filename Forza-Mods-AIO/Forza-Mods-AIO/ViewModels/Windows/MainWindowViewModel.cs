@@ -245,8 +245,9 @@ public partial class MainWindowViewModel : ObservableObject
             update = GetVersionInfo(process.MainModule.FileName).FileVersion ?? "Unable to get update info";
         }
 
-        var type = GetTypeFromName(name);
-        GameVerPlat.GetInstance().Name = name;
+        var smoothName = GetSmoothNameFromProcessName(name);
+        var type = GetTypeFromName(smoothName);
+        GameVerPlat.GetInstance().Name = smoothName;
         GameVerPlat.GetInstance().Platform = platform;
         GameVerPlat.GetInstance().Update = update;
         GameVerPlat.GetInstance().Type = type;
@@ -260,6 +261,16 @@ public partial class MainWindowViewModel : ObservableObject
             "Forza Horizon 4" => GameVerPlat.GameType.Fh4,
             "Forza Horizon 5" => GameVerPlat.GameType.Fh5,
             _ => GameVerPlat.GameType.None
+        };
+    }
+    
+    private static string GetSmoothNameFromProcessName(string processName)
+    {
+        return processName switch
+        {
+            "forzahorizon4.exe" => "Forza Horizon 4",
+            "forzahorizon5.exe" => "Forza Horizon 5",
+            _ => string.Empty
         };
     }
 
