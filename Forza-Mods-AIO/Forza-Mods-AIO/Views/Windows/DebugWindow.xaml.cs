@@ -8,7 +8,7 @@ namespace Forza_Mods_AIO.Views.Windows;
 public partial class DebugWindow
 {
     public DebugWindowViewModel ViewModel { get; }
-    public Monet Theming => Monet.GetInstance();
+    public Theming Theming => Theming.GetInstance();
     
     public DebugWindow(DebugWindowViewModel viewModel)
     {

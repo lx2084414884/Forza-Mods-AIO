@@ -14,5 +14,5 @@ public partial class Tuning
     }
     
     public TuningViewModel ViewModel { get; }
-    public Monet Theming => Monet.GetInstance();
+    public Theming Theming => Theming.GetInstance();
 }

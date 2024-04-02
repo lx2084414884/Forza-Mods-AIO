@@ -15,7 +15,7 @@ public sealed partial class SelfVehicle
         InitializeComponent();
     }
 
-    public Monet Theming => Monet.GetInstance();
+    public Theming Theming => Theming.GetInstance();
 
     private void AddSearchResults()
     {

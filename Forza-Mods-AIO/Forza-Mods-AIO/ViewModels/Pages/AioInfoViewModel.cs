@@ -17,7 +17,7 @@ public partial class AioInfoViewModel : ObservableObject
     private static void LaunchUrl(string param) => Process.Start("explorer.exe",$"\"{param}\"");
 
     [RelayCommand]
-    private static void ChangeMonet() => Monet.GetInstance().ChangeColor();
+    private static void ChangeMonet() => Theming.GetInstance().ChangeColor();
 
     [RelayCommand]
     private static void ShowDebugWindow() => WindowsProviderService.Show<DebugWindow>();

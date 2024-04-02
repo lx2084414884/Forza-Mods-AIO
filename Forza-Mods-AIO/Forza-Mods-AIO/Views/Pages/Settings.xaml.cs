@@ -16,7 +16,7 @@ public partial class Settings
     }
     
     public SettingsViewModel ViewModel { get; }
-    public Monet Theming => Monet.GetInstance();
+    public Theming Theming => Theming.GetInstance();
     
     private void LanguageBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {

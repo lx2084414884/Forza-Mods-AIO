@@ -17,7 +17,7 @@ public partial class Search
         InitializeComponent();
     }
 
-    public Monet Theming => Monet.GetInstance();
+    public Theming Theming => Theming.GetInstance();
     public SearchViewModel ViewModel { get; }
     private MainWindowViewModel MainWindowViewModel => App.GetRequiredService<MainWindowViewModel>();
     

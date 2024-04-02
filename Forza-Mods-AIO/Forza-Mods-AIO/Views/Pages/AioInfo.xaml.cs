@@ -14,5 +14,5 @@ public partial class AioInfo
     }
 
     public AioInfoViewModel ViewModel { get; }
-    public Monet Theming => Monet.GetInstance();
+    public Theming Theming => Theming.GetInstance();
 }

@@ -14,5 +14,5 @@ public partial class Autoshow
     }
 
     public AutoshowViewModel ViewModel { get; }
-    public Monet Theming => Monet.GetInstance();
+    public Theming Theming => Theming.GetInstance();
 }
