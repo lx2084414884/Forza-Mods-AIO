@@ -27,7 +27,6 @@
                           VerticalAlignment="Center"
                           SelectedIndex="0"
                           SelectionChanged="UnlockBox_OnSelectionChanged"
-                          Loaded="UnlockBox_OnLoaded"
                           IsEnabled="{Binding ViewModel.AreUiElementsEnabled}"
                           mah:ControlsHelper.CornerRadius="{StaticResource ControlCornerRadius}"
                           Background="{DynamicResource MahApps.Brushes.AccentBase}"
@@ -56,14 +55,6 @@
                     <controls:StatusComboboxItem Content="{DynamicResource SeasonalPoints}"
                                                  IsOn="{Binding ViewModel.IsSeasonalEnabled}"
                                                  Visibility="{Binding ViewModel.IsFh5, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    
-                    <controls:StatusComboboxItem Content="{DynamicResource CarXp}"
-                                                 IsOn="{Binding ViewModel.IsCarXpEnabled}"
-                                                 Visibility="{Binding ViewModel.IsFm8, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    
-                    <controls:StatusComboboxItem Content="{DynamicResource CarPoints}"
-                                                 IsOn="{Binding ViewModel.IsCarPointsEnabled}"
-                                                 Visibility="{Binding ViewModel.IsFm8, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     
                 </ComboBox>
                 

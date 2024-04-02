@@ -196,27 +196,6 @@ public partial class Unlocks
         
         UnlockSwitch.Toggled += ToggleSwitch_OnToggled;
     }
-    
-    private void UnlockBox_OnLoaded(object sender, RoutedEventArgs e)
-    {
-        if (ViewModel.WasComboBoxLoaded || sender is not ComboBox { HasItems: true } comboBox)
-        {
-            return;
-        }
-        
-        for (var i = 0; i < comboBox.Items.Count; i++)
-        {
-            if (comboBox.Items[i] is not ComboBoxItem { Visibility: Visibility.Visible })
-            {
-                continue;
-            }
-            
-            comboBox.SelectedIndex = i;
-            break;
-        }
-
-        ViewModel.WasComboBoxLoaded = true;
-    }
 
     private void ValueBox_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
     {

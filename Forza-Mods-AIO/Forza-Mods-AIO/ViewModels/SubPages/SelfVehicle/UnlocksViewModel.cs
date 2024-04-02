@@ -30,12 +30,6 @@ public partial class UnlocksViewModel : ObservableObject
     private bool _isSeasonalEnabled;
     
     [ObservableProperty]
-    private bool _isCarXpEnabled;
-    
-    [ObservableProperty]
-    private bool _isCarPointsEnabled;
-    
-    [ObservableProperty]
     private int _xpValue;
     
     [ObservableProperty]
@@ -53,15 +47,7 @@ public partial class UnlocksViewModel : ObservableObject
     [ObservableProperty]
     private int _seasonalValue;
     
-    [ObservableProperty]
-    private int _carXpValue;
-    
-    [ObservableProperty]
-    private int _carPointsValue;
-    
     public bool IsFh5 => GameVerPlat.GetInstance().Type == GameVerPlat.GameType.Fh5;
-    
-    public bool IsFm8 => GameVerPlat.GetInstance().Type == GameVerPlat.GameType.Fm8;
     
     public bool IsHorizon => GameVerPlat.GetInstance().Type is GameVerPlat.GameType.Fh4 or GameVerPlat.GameType.Fh5;
 }
