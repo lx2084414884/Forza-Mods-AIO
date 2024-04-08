@@ -61,14 +61,14 @@
     </Page.Resources>
 
     <Grid>
-        <Label VerticalAlignment="Top"
-               HorizontalAlignment="Center"
-               Margin="10"
-               FontWeight="SemiBold"
-               FontSize="14"
-               Content="{DynamicResource ToolCredits}" />
 
-        <StackPanel VerticalAlignment="Top"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Column="1" 
+                    VerticalAlignment="Top"
                     HorizontalAlignment="Right"
                     Margin="10">
 
@@ -111,18 +111,6 @@
                    Content="{DynamicResource UsefulLinks}" />
 
             <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-
-                <Label Content="{DynamicResource ForzaModsDiscord}" />
-
-                <Button Style="{DynamicResource NavigateButtonStyle}"
-                        Tag="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"
-                        Command="{Binding ViewModel.LaunchUrlCommand, Mode=OneWay}"
-                        CommandParameter="https://discord.gg/forzamods" />
-
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Margin="0 5 0 0">
 
@@ -137,25 +125,53 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel HorizontalAlignment="Left"
+        <StackPanel Grid.Column="0" 
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Margin="10 40">
+                    Margin="10">
 
-            <Label Content="Merik (Main maintainer) - Self/Vehicle, Overlay, Tuning, Backend, AC Bypass" />
-            <Label Content="Yeethan - Self/Vehicle, GVP, Overlay, Backend" />
-            <Label Content="Das - Base For Tuning" />
-            <Label Content="Mark - Backend Help" />
-            <Label Content="Anonymous - SQL" />
-            <Label Content="Ucxh - Mission time scale, FM8 Car points and Car XP" />
+            <TextBlock Text="{DynamicResource FreeAndOpenSource}"
+                       Foreground="White"
+                       TextWrapping="Wrap"/>
+            
+            <TextBlock Text="{DynamicResource OnlyOfficialDownload}"
+                       Foreground="White"
+                       TextWrapping="Wrap"/>
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{DynamicResource JoinTheDiscord}"
+                           Foreground="White"
+                           TextWrapping="Wrap"/>
+                
+                <TextBlock Margin="5 0">
+                    <Hyperlink Command="{Binding ViewModel.LaunchUrlCommand}"
+                               CommandParameter="{DynamicResource DiscordHyperlink}"
+                               Foreground="DodgerBlue">
+                        <Hyperlink.Inlines>
+                            <Run Text="{DynamicResource DiscordHyperlink}"/>
+                        </Hyperlink.Inlines>    
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            
+            <TextBlock Text="{DynamicResource MainDeveloper}"
+                       Foreground="White"
+                       TextWrapping="Wrap"/>
+            
+            <TextBlock Text="{DynamicResource AnyoneElseWhoClaims}"
+                       Foreground="White"
+                       TextWrapping="Wrap"/>
 
         </StackPanel>
 
-        <Label VerticalAlignment="Bottom"
+        <Label Grid.Column="0" 
+               VerticalAlignment="Bottom"
                HorizontalAlignment="Left"
                Margin="10"
                Content="{Binding ViewModel.Version}" />
 
-        <StackPanel HorizontalAlignment="Right"
+        <StackPanel Grid.Column="1" 
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Margin="10">
 

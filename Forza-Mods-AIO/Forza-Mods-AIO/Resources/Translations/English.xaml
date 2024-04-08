@@ -27,6 +27,7 @@
     <system:String x:Key="Autoshow">Autoshow/Garage</system:String>
     <system:String x:Key="SelfVehicle">Self/Vehicle</system:String>
     <system:String x:Key="Tuning">Tuning</system:String>
+    <system:String x:Key="About">About</system:String>
     <system:String x:Key="Settings">Settings</system:String>
     
     <!-- MainWindow.xaml - Search feature -->
@@ -43,7 +44,12 @@
     <system:String x:Key="ReportedInfo">Reported Info</system:String>
     
     <!-- AioInfo.xaml - Main controls -->
-    <system:String x:Key="ToolCredits">Tool Credits</system:String>
+    <system:String x:Key="FreeAndOpenSource">This tool is free and open source. If you paid for it you got scammed</system:String>
+    <system:String x:Key="OnlyOfficialDownload">The only official download is the GitHub repository (which you can find in the about page or the right hand side)</system:String>
+    <system:String x:Key="JoinTheDiscord">Join the discord here:</system:String>
+    <system:String x:Key="DiscordHyperlink">https://discord.gg/ForzaMods</system:String>
+    <system:String x:Key="MainDeveloper">The main developer of this software is @merikaaaaa (859106884358635530) on discord</system:String>
+    <system:String x:Key="AnyoneElseWhoClaims">Anyone else who claims to have made it is lying</system:String>
     <system:String x:Key="Donations">Donations</system:String>
     <system:String x:Key="UsefulLinks">Useful Links</system:String>
     <system:String x:Key="ForzaModsDiscord">Forza Mods Discord</system:String>
@@ -262,6 +268,10 @@
     <system:String x:Key="RimRadiusFront">Rim Radius - Front</system:String>
     <system:String x:Key="RimSizeRear">Rim Size - Rear</system:String>
     <system:String x:Key="RimRadiusRear">Rim Radius - Rear</system:String>
+    
+    <!-- About.xaml -->
+    <system:String x:Key="ToolContributors">Tool Contributors</system:String>
+    <system:String x:Key="DiscordServer">Discord Server</system:String>
     
     <!-- Settings.xaml -->
     <system:String x:Key="Appearance">Appearance</system:String>
