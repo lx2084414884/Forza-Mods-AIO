@@ -29,7 +29,7 @@
         
         <TextBlock>
             <Hyperlink Command="{Binding ViewModel.LaunchUrlCommand}"
-                       CommandParameter="{DynamicResource DiscordHyperlink}"
+                       CommandParameter="https://github.com/forzamods/forza-mods-aio"
                        Foreground="DodgerBlue">
                 <Hyperlink.Inlines>
                     <Run Text="{DynamicResource GitRepository}"/>
