@@ -25,7 +25,7 @@ public partial class MainWindowViewModel : ObservableObject
     
     #region Constants
 
-    private const string NotAttachedText = "Launch FH4, FH5 or FM8";
+    private const string NotAttachedText = "Launch FH4 or FH5";
     private const double WindowCornerRadiusSize = 7.5;
 
     #endregion
@@ -228,8 +228,7 @@ public partial class MainWindowViewModel : ObservableObject
         string update;    
         var gamePath = process.MainModule.FileName;
 
-        if (gamePath.Contains("Microsoft.624F8B84B80") || gamePath.Contains("Microsoft.SunriseBaseGame") ||
-            gamePath.Contains("Microsoft.ForzaMotorsport"))
+        if (gamePath.Contains("Microsoft.624F8B84B80") || gamePath.Contains("Microsoft.SunriseBaseGame"))
         {
             platform = "MS";
             var filePath = Combine(GetDirectoryName(gamePath) ?? string.Empty, "appxmanifest.xml");
