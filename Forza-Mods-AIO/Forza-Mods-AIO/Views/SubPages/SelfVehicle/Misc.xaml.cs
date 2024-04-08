@@ -37,12 +37,10 @@ public partial class Misc
         ViewModel.SpooferUiElementsEnabled = true;
 
         if (MiscCheatsFh5.NameDetourAddress == 0) return;
-        GetInstance().WriteMemory(MiscCheatsFh5.NameDetourAddress + 0x72, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh5.NameDetourAddress + 0x55, toggleSwitch.IsOn ? (byte)1 : (byte)0);
         if (string.IsNullOrEmpty(NameBox.Text)) return;
         var name = Encoding.Unicode.GetBytes(NameBox.Text);
-        var newName = new byte[64];
-        Array.Copy(name, newName, Math.Min(name.Length, newName.Length));
-        GetInstance().WriteArrayMemory(MiscCheatsFh5.NameDetourAddress + 0x73, newName);
+        GetInstance().WriteArrayMemory(MiscCheatsFh5.NameDetourAddress + 0x56, name);
     }
 
     private void NameBox_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -50,9 +48,7 @@ public partial class Misc
         if (MiscCheatsFh5.NameDetourAddress == 0) return;
         if (string.IsNullOrEmpty(NameBox.Text)) return;
         var name = Encoding.Unicode.GetBytes(NameBox.Text);
-        var newName = new byte[64];
-        Array.Copy(name, newName, Math.Min(name.Length, newName.Length));
-        GetInstance().WriteArrayMemory(MiscCheatsFh5.NameDetourAddress + 0x73, newName);
+        GetInstance().WriteArrayMemory(MiscCheatsFh5.NameDetourAddress + 0x56, name);
     }
 
     private async void TpSwitch_OnToggled(object sender, RoutedEventArgs e)
@@ -139,11 +135,17 @@ public partial class Misc
                 MainToggleSwitch.IsOn = ViewModel.SpeedZoneMultiplierEnabled;
                 break;
             }
+            case 9:
+            {           
+                MainValueBox.Value = ViewModel.RaceTimeScaleValue;
+                MainToggleSwitch.IsOn = ViewModel.RaceTimeScaleEnabled;
+                break;
+            }
         }
 
         MainValueBox.Minimum = comboBox.SelectedIndex switch
         { 
-            0 or 1 or 2 or 3 or 4 or 6 or 7 or 8 => 0,
+            0 or 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 => 0,
             5 => int.MinValue,
             _ => throw new IndexOutOfRangeException()
         };
@@ -152,14 +154,14 @@ public partial class Misc
         { 
             0 or 1 or 2 or 4 or 5 => int.MaxValue,
             3 or 8 => 10,
-            6 or 7 => 1,
+            6 or 7 or 9 => 1,
             _ => throw new IndexOutOfRangeException()
         };
 
         MainValueBox.Interval = comboBox.SelectedIndex switch
         { 
             0 or 1 or 2 or 3 or 4 or 5 or 8 => 1,
-            6 or 7 => 0.1,
+            6 or 7 or 9 => 0.1,
             _ => throw new IndexOutOfRangeException()
         };
         
@@ -234,6 +236,13 @@ public partial class Misc
                 GetInstance().WriteMemory(MiscCheatsFh5.SpeedZoneMultiplierDetourAddress + 0x20, ViewModel.SpeedZoneMultiplierValue);
                 break;
             }
+            case 9:
+            {           
+                ViewModel.RaceTimeScaleValue = Convert.ToSingle(e.NewValue);
+                if (MiscCheatsFh5.RaceTimeScaleDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh5.RaceTimeScaleDetourAddress + 0x35, ViewModel.RaceTimeScaleValue);
+                break;
+            }
         }
     }
     
@@ -290,6 +299,11 @@ public partial class Misc
             case 8:
             {
                 await SpeedZoneMultiplier(toggleSwitch.IsOn);
+                break;
+            }
+            case 9:
+            {
+                await RaceTimeScale(toggleSwitch.IsOn);
                 break;
             }
         }
@@ -411,6 +425,19 @@ public partial class Misc
         GetInstance().WriteMemory(MiscCheatsFh5.SpeedZoneMultiplierDetourAddress + 0x1F, toggled ? (byte)1 : (byte)0);
         GetInstance().WriteMemory(MiscCheatsFh5.SpeedZoneMultiplierDetourAddress + 0x20, Convert.ToSingle(MainValueBox.Value));
         ViewModel.SpeedZoneMultiplierEnabled = toggled;
+    }
+    
+    private async Task RaceTimeScale(bool toggled)
+    {
+        if (MiscCheatsFh5.RaceTimeScaleDetourAddress == 0)
+        {
+            await MiscCheatsFh5.CheatRaceTimeScale();
+        }
+        
+        if (MiscCheatsFh5.RaceTimeScaleDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh5.RaceTimeScaleDetourAddress + 0x34, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh5.RaceTimeScaleDetourAddress + 0x35, Convert.ToSingle(MainValueBox.Value));
+        ViewModel.RaceTimeScaleEnabled = toggled;
     }
 
     private async void UnbreakableSkillScoreSwitch_OnToggled(object sender, RoutedEventArgs e)

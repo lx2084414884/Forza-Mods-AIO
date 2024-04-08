@@ -88,6 +88,9 @@
                     <controls:StatusComboboxItem Content="{DynamicResource SpeedZoneMultiplier}"
                                                  IsOn="{Binding ViewModel.SpeedZoneMultiplierEnabled}"/>
                     
+                    <controls:StatusComboboxItem Content="{DynamicResource RaceTimeScale}"
+                                                 IsOn="{Binding ViewModel.RaceTimeScaleEnabled}"/>
+                    
                 </ComboBox>
                 
                 <mah:NumericUpDown x:Name="MainValueBox" 

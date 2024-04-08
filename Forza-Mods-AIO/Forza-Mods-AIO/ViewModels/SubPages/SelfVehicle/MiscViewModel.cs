@@ -41,6 +41,9 @@ public partial class MiscViewModel : ObservableObject
     private float _spinPrizeScaleValue;
     
     [ObservableProperty]
+    private bool _raceTimeScaleEnabled;
+    
+    [ObservableProperty]
     private int _spinSellFactorValue = 999;
     
     [ObservableProperty]
@@ -63,4 +66,7 @@ public partial class MiscViewModel : ObservableObject
     
     [ObservableProperty]
     private float _speedZoneMultiplierValue = 5;
+    
+    [ObservableProperty]
+    private float _raceTimeScaleValue = 0.5f;
 }

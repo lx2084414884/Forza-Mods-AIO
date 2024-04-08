@@ -1,5 +1,4 @@
-﻿using Forza_Mods_AIO.Resources;
-using static Forza_Mods_AIO.Resources.Cheats;
+﻿using static Forza_Mods_AIO.Resources.Cheats;
 using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
@@ -24,6 +23,8 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
     public UIntPtr MissionTimeScaleDetourAddress;
     private UIntPtr _trailblazerTimeScaleAddress;
     public UIntPtr TrailblazerTimeScaleDetourAddress;
+    private UIntPtr _raceTimeScaleAddress;
+    public UIntPtr RaceTimeScaleDetourAddress;
     private UIntPtr _speedZoneMultiplierAddress;
     public UIntPtr SpeedZoneMultiplierDetourAddress;
     private UIntPtr _unbreakableSkillScoreAddress;
@@ -36,31 +37,39 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         _nameAddress = 0;
         NameDetourAddress = 0;
 
-        var urtcbaseHandle = Imports.GetModuleHandle("ucrtbase.dll");
-        _nameAddress = Imports.GetProcAddress(urtcbaseHandle, "wcsncpy_s") + 0x98;
+        const string sig = "90 48 8B ? ? EB ? 48 8D ? ? 48 89";
+        _nameAddress = await SmartAobScan(sig);
         
-        if (_nameAddress > 0x98)
+        if (_nameAddress > 0)
         {
+            _nameAddress -= 61;
+
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+
             var namePtr = await CheatNamePtr();
             if (namePtr == 0) return;
 
             var ptrBytes = BitConverter.GetBytes(namePtr);
             var asm = new byte[]
             {
-                0x0F, 0xB7, 0x04, 0x1A, 0x80, 0x3D, 0x67, 0x00, 0x00, 0x00, 0x01, 0x75, 0x5D, 0x48, 0x8B, 0xF3, 0x48,
-                0x01, 0xD6, 0x51, 0x48, 0xB9, ptrBytes[0], ptrBytes[1], ptrBytes[2], ptrBytes[3], ptrBytes[4],
-                ptrBytes[5], ptrBytes[6], ptrBytes[7], 0x48, 0x8B, 0x09, 0x48, 0x8B, 0x89, 0xF0, 0x00, 0x00, 0x00, 0x48,
-                0x85, 0xC9, 0x74, 0x3C, 0x48, 0x8B, 0x49, 0x30, 0x48, 0x85, 0xC9, 0x74, 0x33, 0x48, 0x8B, 0x49, 0x30,
-                0x48, 0x85, 0xC9, 0x74, 0x2A, 0x48, 0x8B, 0x49, 0x08, 0x48, 0x85, 0xC9, 0x74, 0x21, 0x48, 0x39, 0xCE,
-                0x72, 0x1C, 0x48, 0x83, 0xC1, 0x40, 0x48, 0x39, 0xCE, 0x77, 0x13, 0x48, 0x83, 0xE9, 0x40, 0x48, 0x29,
-                0xCE, 0x48, 0x8D, 0x0D, 0x0F, 0x00, 0x00, 0x00, 0x48, 0x01, 0xF1, 0x8B, 0x01, 0x59, 0x48, 0x8B, 0xF7
+                0x80, 0x3D, 0x4E, 0x00, 0x00, 0x00, 0x01, 0x75, 0x40, 0x48, 0xBA, ptrBytes[0], ptrBytes[1], ptrBytes[2],
+                ptrBytes[3], ptrBytes[4], ptrBytes[5], ptrBytes[6], ptrBytes[7], 0x48, 0x8B, 0x12, 0x48, 0x8B, 0x92,
+                0xF0, 0x00, 0x00, 0x00, 0x48, 0x85, 0xD2, 0x74, 0x27, 0x48, 0x8B, 0x52, 0x30, 0x48, 0x85, 0xD2, 0x74,
+                0x1E, 0x48, 0x8B, 0x52, 0x30, 0x48, 0x85, 0xD2, 0x74, 0x15, 0x48, 0x8B, 0x52, 0x08, 0x48, 0x85, 0xD2,
+                0x74, 0x0C, 0x48, 0x39, 0xD0, 0x75, 0x07, 0x48, 0x8D, 0x05, 0x0D, 0x00, 0x00, 0x00, 0x48, 0x8B, 0xD0,
+                0x48, 0x8D, 0x4D, 0x17
             };
 
             NameDetourAddress = GetInstance().CreateDetour(_nameAddress, asm, 7);
             return;
         }
         
-        ShowError("Name Spoofer", "No signature, GetProcAddress is used.");
+        ShowError("Name Spoofer", sig);
     }
 
     private static async Task<UIntPtr> CheatNamePtr()
@@ -381,7 +390,37 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         
         ShowError("Unbreakable skill score", sig);
     }
-    
+
+    public async Task CheatRaceTimeScale()
+    {
+        _raceTimeScaleAddress = 0;
+        RaceTimeScaleDetourAddress = 0;
+
+        const string sig = "40 ? 48 83 EC ? 48 8B ? 48 8B ? 0F 29 ? ? ? 0F 28 ? FF 50 ? 0F 57";
+        _raceTimeScaleAddress = await SmartAobScan(sig) + 29;
+
+        if (_raceTimeScaleAddress > 29)
+        {
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            
+            var asm = new byte[]
+            {
+                0xF3, 0x0F, 0x5A, 0xCE, 0x80, 0x3D, 0x29, 0x00, 0x00, 0x00, 0x01, 0x75, 0x1E, 0x48, 0x83, 0xEC, 0x10,
+                0xF3, 0x0F, 0x7F, 0x14, 0x24, 0xF3, 0x0F, 0x5A, 0x15, 0x17, 0x00, 0x00, 0x00, 0xF2, 0x0F, 0x59, 0xCA,
+                0xF3, 0x0F, 0x6F, 0x14, 0x24, 0x48, 0x83, 0xC4, 0x10, 0xF2, 0x0F, 0x58, 0xC8
+            };
+
+            RaceTimeScaleDetourAddress = GetInstance().CreateDetour(_raceTimeScaleAddress, asm, 8);
+            return;
+        }
+        
+        ShowError("Race Time Scale", sig);
+    }
     
     public async Task CheatRemoveBuildCap()
     {
@@ -418,7 +457,7 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         
         if (_nameAddress > 0)
         {
-            mem.WriteArrayMemory(_nameAddress, new byte[] { 0x0F, 0xB7, 0x04, 0x13, 0x48, 0x8B, 0xF7 });
+            mem.WriteArrayMemory(_nameAddress, new byte[] { 0x48, 0x8B, 0xD0, 0x48, 0x8D, 0x4D, 0x17 });
             Free(NameDetourAddress);
         }
 
@@ -481,6 +520,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         {
             mem.WriteArrayMemory(_unbreakableSkillScoreAddress, new byte[] { 0x0F, 0xB6, 0xF0, 0x40, 0x38, 0xAF, 0x74, 0x02, 0x00, 0x00 });
             Free(UnbreakableSkillScoreDetourAddress);
+        }
+
+        if (_raceTimeScaleAddress > 29)
+        {
+            mem.WriteArrayMemory(_raceTimeScaleAddress, new byte[] { 0xF3, 0x0F, 0x5A, 0xCE, 0xF2, 0x0F, 0x58, 0xC8 });
+            Free(RaceTimeScaleDetourAddress);
         }
 
         if (_removeBuildCapAddress <= 5) return;
