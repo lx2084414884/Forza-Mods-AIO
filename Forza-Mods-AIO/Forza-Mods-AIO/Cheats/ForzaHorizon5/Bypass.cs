@@ -2,6 +2,8 @@
 using Forza_Mods_AIO.Models;
 using static Memory.Types.Imps;
 using static System.BitConverter;
+using static Forza_Mods_AIO.Resources.Memory;
+using Timer = System.Timers.Timer;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
@@ -9,9 +11,10 @@ public class Bypass : CheatsUtilities, ICheatsBase
 {
     public readonly DebugSession BypassDebug = new("Bypass", [], []);
 
-    private UIntPtr _crcFuncAddress, _memCopyAddress;
+    private UIntPtr _crcFuncAddress, _memCopyAddress, _callAddress;
     public UIntPtr CrcFuncDetourAddress;
     private bool _scanning;
+    private Timer _antiCheatTimer = null!;
     
     public async Task DisableCrcChecks()
     {
@@ -37,7 +40,7 @@ public class Bypass : CheatsUtilities, ICheatsBase
         
         if (_crcFuncAddress > 0)
         {
-            var mem = Resources.Memory.GetInstance();
+            var mem = GetInstance();
             var scanResult = (IntPtr)_crcFuncAddress + mem.ReadMemory<int>(_crcFuncAddress + 1) + 5;
             _crcFuncAddress = (UIntPtr)(scanResult + 311);
             
@@ -67,6 +70,9 @@ public class Bypass : CheatsUtilities, ICheatsBase
             CrcFuncDetourAddress = mem.CreateDetour(_crcFuncAddress, asm, 5, varBytes: varBytes);
             BypassDebug.DebugInfoReports.Add(new DebugInfoReport($"Hook Addr: {CrcFuncDetourAddress:X}"));
             _scanning = false;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            Task.Run(DisableDynamicCodeCalls);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             return;
         }
         
@@ -74,11 +80,42 @@ public class Bypass : CheatsUtilities, ICheatsBase
         ShowError("Bypass", sig);
     }
 
+    private async Task DisableDynamicCodeCalls()
+    {
+        _callAddress = 0;
+
+        const string sig = "49 8B ? FF 50 ? 48 8D ? ? ? ? ? FF 15 ? ? ? ? 8B 8D";
+        _callAddress = await SmartAobScan(sig) + 3;
+
+        if (_callAddress > 3)
+        {
+            _antiCheatTimer = new Timer();
+            _antiCheatTimer.Interval = 30000;
+            _antiCheatTimer.Elapsed += async (_, _) =>
+            {
+                var mem = GetInstance();
+                mem.WriteArrayMemory(_callAddress, new byte[] { 0xFF, 0x50, 0x30 });
+                await Task.Delay(1000);
+                mem.WriteArrayMemory(_callAddress, new byte[] { 0x90, 0x90, 0x90 });
+            };
+        
+            GetInstance().WriteArrayMemory(_callAddress, new byte[] { 0x90, 0x90, 0x90 });
+            _antiCheatTimer.Start();
+        }
+    }
+    
     public void Cleanup()
     {
-        if (_crcFuncAddress <= 0) return;
-        var memInstance = Resources.Memory.GetInstance();
-        memInstance.WriteArrayMemory(_crcFuncAddress, new byte[] { 0xF3, 0x0F, 0x6F, 0x40, 0xF0 });
+        var mem = GetInstance();
+        
+        if (_callAddress > 3)
+        {
+            _antiCheatTimer.Stop();
+            mem.WriteArrayMemory(_callAddress, new byte[] { 0xFF, 0x50, 0x30 });
+        }
+        
+        if (CrcFuncDetourAddress <= 0) return;
+        mem.WriteArrayMemory(_crcFuncAddress, new byte[] { 0xF3, 0x0F, 0x6F, 0x40, 0xF0 });
         Free(CrcFuncDetourAddress);
         Free(_memCopyAddress);
     }
@@ -86,6 +123,8 @@ public class Bypass : CheatsUtilities, ICheatsBase
     public void Reset()
     {
         _scanning = false;
+        _antiCheatTimer.Stop();
+        _antiCheatTimer = null!;
         var fields = typeof(Bypass).GetFields().Where(f => f.FieldType == typeof(UIntPtr));
         foreach (var field in fields)
         {
