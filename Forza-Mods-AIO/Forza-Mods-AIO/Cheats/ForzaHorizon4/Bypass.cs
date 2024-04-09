@@ -11,8 +11,6 @@ public class Bypass : ICheatsBase
 
     private byte[] _rtlUserThreadStartOrig = null!;
     private byte[] _ntCreateThreadExOrig = null!;
-
-    public bool CreateRemoteThreadsDisabled;
     
     public void DisableCreateRemoteThreadChecks()
     {
@@ -24,7 +22,6 @@ public class Bypass : ICheatsBase
         _ntCreateThreadExOrig = mem.ReadArrayMemory<byte>(ntCreateThreadEx, 8);
         mem.WriteArrayMemory(rtlUserThreadStart, RtlUserThreadStartPatch);
         mem.WriteArrayMemory(ntCreateThreadEx, NtCreateThreadExPatch);
-        CreateRemoteThreadsDisabled = true;
     }
     
     public void Cleanup()
@@ -45,7 +42,6 @@ public class Bypass : ICheatsBase
 
     public void Reset()
     {        
-        CreateRemoteThreadsDisabled = false;
         _rtlUserThreadStartOrig = null!;
         _ntCreateThreadExOrig = null!;
     }

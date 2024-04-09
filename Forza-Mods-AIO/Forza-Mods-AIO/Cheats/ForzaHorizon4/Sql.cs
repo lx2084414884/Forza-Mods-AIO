@@ -71,14 +71,11 @@ public class Sql : CheatsUtilities, ICheatsBase
         memory.WriteStringMemory(r8, command + "\0");
         memory.WriteArrayMemory(shellCodeAddress, shellCode);
         
-        if (!GetClass<Bypass>().CreateRemoteThreadsDisabled)
-        {
-            GetClass<Bypass>().DisableCreateRemoteThreadChecks();
-        }
-        
+        GetClass<Bypass>().DisableCreateRemoteThreadChecks();
         var thread = Imports.CreateRemoteThread(procHandle, 0, 0, shellCodeAddress, rcx, 0, out _);
         _ = Imports.WaitForSingleObject(thread, int.MaxValue);
         Imports.CloseHandle(thread);
+        GetClass<Bypass>().Cleanup();
         Free(shellCodeAddress);
         Free(r8);
         Free(rdx);
