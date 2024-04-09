@@ -42,7 +42,7 @@ public partial class AutoshowViewModel : ObservableObject
                     goto SkipQuerying;
                 }
         
-                await SqlFh4.Query(command);
+                await Task.Run(() => SqlFh4.Query(command));
                 SkipQuerying:
                 break;
             }
@@ -58,7 +58,7 @@ public partial class AutoshowViewModel : ObservableObject
                     goto SkipQuerying;
                 }
         
-                await SqlFh5.Query(command);
+                await Task.Run(() => SqlFh5.Query(command));
                 SkipQuerying:
                 break;
             }
