@@ -13,7 +13,8 @@
       d:DesignWidth="800">
     
     <StackPanel>
-        <Border Style="{StaticResource CommonBorderStyle}">
+        <Border Style="{StaticResource CommonBorderStyle}"
+                Visibility="{Binding ViewModel.IsFh5, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid Margin="5 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/> 

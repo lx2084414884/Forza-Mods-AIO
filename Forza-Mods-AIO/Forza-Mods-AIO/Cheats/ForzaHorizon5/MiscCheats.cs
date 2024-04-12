@@ -328,7 +328,7 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
             return;
         }
         
-        ShowError("Trailblazer time scale", sig);
+        ShowError("Speedzone multiplier", sig);
     }
     
     public async Task CheatTrailblazerTimeScale()

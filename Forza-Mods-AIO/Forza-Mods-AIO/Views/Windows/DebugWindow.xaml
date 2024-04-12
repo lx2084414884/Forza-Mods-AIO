@@ -62,22 +62,29 @@
               Grid.Row="0">
             
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
             <GroupBox Grid.Column="0"
                       Margin="10 15 0 0"
-                      Visibility="{Binding ViewModel.AreAnyBreakpointsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                      Visibility="{Binding ViewModel.AreAnyBreakpointsAvailable, 
+                      Converter={StaticResource BooleanToVisibilityConverter}}">
                 <GroupBox.Header>
                     <Grid>
-                        <Label HorizontalAlignment="Left"
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" 
+                               HorizontalAlignment="Left"
                                VerticalAlignment="Center"
                                MinHeight="0"
                                mah:ControlsHelper.ContentCharacterCasing="Upper"
                                Content="{DynamicResource BreakpointList}"/>
                             
-                        <Button HorizontalAlignment="Right"
+                        <Button Grid.Column="1" 
+                                HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Content="{DynamicResource BreakpointUnpause}"
                                 IsEnabled="{Binding ViewModel.CurrentDebugSession.IsAnyBreakpointHit}"

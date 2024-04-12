@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Forza_Mods_AIO.Cheats.ForzaHorizon5;
+using Forza_Mods_AIO.Models;
 using Forza_Mods_AIO.ViewModels.SubPages.SelfVehicle;
 using MahApps.Metro.Controls;
 using static Forza_Mods_AIO.Resources.Memory;
@@ -20,6 +21,8 @@ public partial class Misc
 
     public MiscViewModel ViewModel { get; }
     private static MiscCheats MiscCheatsFh5 => Forza_Mods_AIO.Resources.Cheats.GetClass<MiscCheats>();
+    private static Cheats.ForzaHorizon4.MiscCheats MiscCheatsFh4 =>
+        Forza_Mods_AIO.Resources.Cheats.GetClass<Cheats.ForzaHorizon4.MiscCheats>();
     private static CarCheats CarCheatsFh5 => Forza_Mods_AIO.Resources.Cheats.GetClass<CarCheats>();
     
     private async void NameSpooferSwitch_OnToggled(object sender, RoutedEventArgs e)
@@ -171,6 +174,22 @@ public partial class Misc
 
     private void MainValueBox_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
     {
+        switch (GameVerPlat.GetInstance().Type)
+        {
+            case GameVerPlat.GameType.Fh4:
+                WriteValueFh4(e);
+                break;
+            case GameVerPlat.GameType.Fh5:
+                WriteValue(e);
+                break;
+            case GameVerPlat.GameType.None:
+            default:
+                throw new IndexOutOfRangeException();
+        }
+    }
+
+    private void WriteValue(RoutedPropertyChangedEventArgs<double?> e)
+    {
         switch (MainComboBox.SelectedIndex)
         {
             case 0:
@@ -245,6 +264,11 @@ public partial class Misc
             }
         }
     }
+
+    private void WriteValueFh4(RoutedPropertyChangedEventArgs<double?> e)
+    {
+        
+    }
     
     private async void MainToggleSwitch_OnToggled(object sender, RoutedEventArgs e)
     {
@@ -254,6 +278,23 @@ public partial class Misc
         }
 
         ViewModel.MainUiElementsEnabled = false;
+        switch (GameVerPlat.GetInstance().Type)
+        {
+            case GameVerPlat.GameType.Fh4:
+                await EnableCheatFh4(toggleSwitch);
+                break;
+            case GameVerPlat.GameType.Fh5:
+                await EnableCheat(toggleSwitch);
+                break;
+            case GameVerPlat.GameType.None:
+            default:
+                throw new IndexOutOfRangeException();
+        }
+        ViewModel.MainUiElementsEnabled = true;
+    }
+
+    private async Task EnableCheat(ToggleSwitch toggleSwitch)
+    {
         switch (MainComboBox.SelectedIndex)
         {
             case 0:
@@ -307,7 +348,63 @@ public partial class Misc
                 break;
             }
         }
-        ViewModel.MainUiElementsEnabled = true;
+    }
+
+    private async Task EnableCheatFh4(ToggleSwitch toggleSwitch)
+    {
+        switch (MainComboBox.SelectedIndex)
+        {
+            case 0:
+            {
+                await PrizeScale(toggleSwitch.IsOn);
+                break;
+            }
+            case 1:
+            {
+                await SellFactor(toggleSwitch.IsOn);
+                break;
+            }
+            case 2:
+            {
+                await SkillScoreMultiplierFh4(toggleSwitch.IsOn);
+                break;
+            }
+            case 3:
+            {
+                await DriftScoreMultiplierFh4(toggleSwitch.IsOn);
+                break;
+            }
+            case 4:
+            {
+                await SkillTreeWideEdit(toggleSwitch.IsOn);
+                break;
+            }
+            case 5:
+            {
+                await SkillTreePerksCost(toggleSwitch.IsOn);
+                break;
+            }
+            case 6:
+            {
+                await MissionTimeScaleFh4(toggleSwitch.IsOn);
+                break;
+            }
+            case 7:
+            {
+                await TrailblazerTimeScaleFh4(toggleSwitch.IsOn);
+                break;
+            }
+            case 8:
+            {
+                await SpeedZoneMultiplierFh4(toggleSwitch.IsOn);
+                break;
+            }
+            case 9:
+            {
+                await RaceTimeScaleFh4(toggleSwitch.IsOn);
+                break;
+            }
+        }
     }
 
     private async Task PrizeScale(bool toggled)
@@ -348,6 +445,19 @@ public partial class Misc
         GetInstance().WriteMemory(MiscCheatsFh5.SkillScoreMultiplierDetourAddress + 0x1D, Convert.ToInt32(MainValueBox.Value));
         ViewModel.SkillScoreMultiplierEnabled = toggled;
     }
+
+    private async Task SkillScoreMultiplierFh4(bool toggled)
+    {
+        if (MiscCheatsFh4.SkillScoreMultiplierDetourAddress == 0)
+        {
+            await MiscCheatsFh4.CheatSkillScoreMultiplier();
+        }
+        
+        if (MiscCheatsFh4.SkillScoreMultiplierDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh4.SkillScoreMultiplierDetourAddress + 0x1B, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh4.SkillScoreMultiplierDetourAddress + 0x1C, Convert.ToInt32(MainValueBox.Value));
+        ViewModel.SkillScoreMultiplierEnabled = toggled;
+    }
     
     private async Task DriftScoreMultiplier(bool toggled)
     {
@@ -359,6 +469,19 @@ public partial class Misc
         if (MiscCheatsFh5.DriftScoreMultiplierDetourAddress == 0) return;
         GetInstance().WriteMemory(MiscCheatsFh5.DriftScoreMultiplierDetourAddress + 0x1F, toggled ? (byte)1 : (byte)0);
         GetInstance().WriteMemory(MiscCheatsFh5.DriftScoreMultiplierDetourAddress + 0x20, Convert.ToSingle(MainValueBox.Value));
+        ViewModel.DriftScoreMultiplierEnabled = toggled;
+    }
+    
+    private async Task DriftScoreMultiplierFh4(bool toggled)
+    {
+        if (MiscCheatsFh4.DriftScoreMultiplierDetourAddress == 0)
+        {
+            await MiscCheatsFh4.CheatDriftScoreMultiplier();
+        }
+        
+        if (MiscCheatsFh4.DriftScoreMultiplierDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh4.DriftScoreMultiplierDetourAddress + 0x1C, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh4.DriftScoreMultiplierDetourAddress + 0x1D, Convert.ToSingle(MainValueBox.Value));
         ViewModel.DriftScoreMultiplierEnabled = toggled;
     }
     
@@ -401,6 +524,19 @@ public partial class Misc
         ViewModel.MissionTimeScaleEnabled = toggled;
     }
     
+    private async Task MissionTimeScaleFh4(bool toggled)
+    {
+        if (MiscCheatsFh4.MissionTimeScaleDetourAddress == 0)
+        {
+            await MiscCheatsFh4.CheatMissionTimeScale();
+        }
+        
+        if (MiscCheatsFh4.MissionTimeScaleDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh4.MissionTimeScaleDetourAddress + 0x1F, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh4.MissionTimeScaleDetourAddress + 0x20, Convert.ToSingle(MainValueBox.Value));
+        ViewModel.MissionTimeScaleEnabled = toggled;
+    }
+    
     private async Task TrailblazerTimeScale(bool toggled)
     {
         if (MiscCheatsFh5.TrailblazerTimeScaleDetourAddress == 0)
@@ -411,6 +547,19 @@ public partial class Misc
         if (MiscCheatsFh5.TrailblazerTimeScaleDetourAddress == 0) return;
         GetInstance().WriteMemory(MiscCheatsFh5.TrailblazerTimeScaleDetourAddress + 0x22, toggled ? (byte)1 : (byte)0);
         GetInstance().WriteMemory(MiscCheatsFh5.TrailblazerTimeScaleDetourAddress + 0x23, Convert.ToSingle(MainValueBox.Value));
+        ViewModel.TrailblazerTimeScaleEnabled = toggled;
+    }
+    
+    private async Task TrailblazerTimeScaleFh4(bool toggled)
+    {
+        if (MiscCheatsFh4.TrailblazerTimeScaleDetourAddress == 0)
+        {
+            await MiscCheatsFh4.CheatTrailblazerTimeScale();
+        }
+        
+        if (MiscCheatsFh4.TrailblazerTimeScaleDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh4.TrailblazerTimeScaleDetourAddress + 0x1F, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh4.TrailblazerTimeScaleDetourAddress + 0x20, Convert.ToSingle(MainValueBox.Value));
         ViewModel.TrailblazerTimeScaleEnabled = toggled;
     }
 
@@ -426,6 +575,19 @@ public partial class Misc
         GetInstance().WriteMemory(MiscCheatsFh5.SpeedZoneMultiplierDetourAddress + 0x20, Convert.ToSingle(MainValueBox.Value));
         ViewModel.SpeedZoneMultiplierEnabled = toggled;
     }
+
+    private async Task SpeedZoneMultiplierFh4(bool toggled)
+    {
+        if (MiscCheatsFh4.SpeedZoneMultiplierDetourAddress == 0)
+        {
+            await MiscCheatsFh4.CheatSpeedZoneMultiplier();
+        }
+        
+        if (MiscCheatsFh4.SpeedZoneMultiplierDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh4.SpeedZoneMultiplierDetourAddress + 0x1E, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh4.SpeedZoneMultiplierDetourAddress + 0x1F, Convert.ToSingle(MainValueBox.Value));
+        ViewModel.SpeedZoneMultiplierEnabled = toggled;
+    }
     
     private async Task RaceTimeScale(bool toggled)
     {
@@ -437,6 +599,19 @@ public partial class Misc
         if (MiscCheatsFh5.RaceTimeScaleDetourAddress == 0) return;
         GetInstance().WriteMemory(MiscCheatsFh5.RaceTimeScaleDetourAddress + 0x34, toggled ? (byte)1 : (byte)0);
         GetInstance().WriteMemory(MiscCheatsFh5.RaceTimeScaleDetourAddress + 0x35, Convert.ToSingle(MainValueBox.Value));
+        ViewModel.RaceTimeScaleEnabled = toggled;
+    }
+    
+    private async Task RaceTimeScaleFh4(bool toggled)
+    {
+        if (MiscCheatsFh4.RaceTimeScaleDetourAddress == 0)
+        {
+            await MiscCheatsFh4.CheatRaceTimeScale();
+        }
+        
+        if (MiscCheatsFh4.RaceTimeScaleDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh4.RaceTimeScaleDetourAddress + 0x1E, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh4.RaceTimeScaleDetourAddress + 0x1F, MainValueBox.Value.GetValueOrDefault());
         ViewModel.RaceTimeScaleEnabled = toggled;
     }
 
