@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Forza_Mods_AIO.Cheats.ForzaHorizon4;
 using Forza_Mods_AIO.Models;
 using MahApps.Metro.Controls;
+using static Forza_Mods_AIO.Resources.Cheats;
 
 namespace Forza_Mods_AIO.ViewModels.Windows;
 
@@ -23,6 +25,21 @@ public partial class DebugWindowViewModel : ObservableObject
 
     [RelayCommand]
     private void UnpauseBreakpoint() => CurrentDebugSession.DebugBreakpoints.First(s => s.IsHit).Unpause();
+    
+    public bool IsFh4 => GameVerPlat.GetInstance().Type == GameVerPlat.GameType.Fh4;
+    public bool IsFh5 => GameVerPlat.GetInstance().Type == GameVerPlat.GameType.Fh5;
+
+    [RelayCommand]
+    private static void DisableCrt()
+    {
+        GetClass<Bypass>().DisableCreateRemoteThreadChecks();
+    }
+    
+    [RelayCommand]
+    private static async Task DisableCrc()
+    {
+        await GetClass<Cheats.ForzaHorizon5.Bypass>().DisableCrcChecks();
+    }
     
     public DebugWindowViewModel()
     {

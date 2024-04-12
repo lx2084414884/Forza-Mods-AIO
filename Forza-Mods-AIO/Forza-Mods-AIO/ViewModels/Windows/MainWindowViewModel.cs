@@ -176,7 +176,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             SetupExit();
         };
-        
+
         watcher.Start();
     }
 

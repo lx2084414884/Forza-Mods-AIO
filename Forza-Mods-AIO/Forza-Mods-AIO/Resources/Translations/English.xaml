@@ -42,6 +42,9 @@
     <system:String x:Key="BreakpointActions">Breakpoint Actions</system:String>
     <system:String x:Key="BreakpointUnpause">Unpause</system:String>
     <system:String x:Key="ReportedInfo">Reported Info</system:String>
+    <system:String x:Key="AntiAntiCheat">Anti Anti Cheat</system:String>
+    <system:String x:Key="DisableCrt">Disable Create Remote Thread Checks</system:String>
+    <system:String x:Key="DisableCrc">Disable CRC Checks</system:String>
     
     <!-- AioInfo.xaml - Main controls -->
     <system:String x:Key="FreeAndOpenSource">This tool is free and open source. If you paid for it you got scammed</system:String>
