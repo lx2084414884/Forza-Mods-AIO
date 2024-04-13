@@ -75,10 +75,14 @@
                                                  IsOn="{Binding ViewModel.DriftScoreMultiplierEnabled}"/>
                     
                     <controls:StatusComboboxItem Content="{DynamicResource SkillTreeWideEdit}"
-                                                 IsOn="{Binding ViewModel.SkillTreeWideEditEnabled}"/>
+                                                 IsOn="{Binding ViewModel.SkillTreeWideEditEnabled}"
+                                                 Visibility="{Binding ViewModel.IsFh5, 
+                                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <controls:StatusComboboxItem Content="{DynamicResource SkillTreeCost}"
-                                                 IsOn="{Binding ViewModel.SkillTreeCostEnabled}"/>
+                                                 IsOn="{Binding ViewModel.SkillTreeCostEnabled}"
+                                                 Visibility="{Binding ViewModel.IsFh5, 
+                                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     
                     <controls:StatusComboboxItem Content="{DynamicResource MissionTimeScale}"
                                                  IsOn="{Binding ViewModel.MissionTimeScaleEnabled}"/>
