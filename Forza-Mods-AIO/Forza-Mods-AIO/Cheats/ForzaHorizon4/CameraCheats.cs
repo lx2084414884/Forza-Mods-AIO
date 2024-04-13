@@ -43,8 +43,11 @@ public class CameraCheats : CheatsUtilities, ICheatsBase
         ChaseFarAddress = chaseEnumerable.LastOrDefault() - 10;
         ++successCount;
 
+        var newScanStart = (long)(ChaseAddress - 0x3000);
+        var newScanEnd = (long)(ChaseAddress + 0x3000);
+        
         const string driverHoodSig = "CD CC 4C 3E 00 50 43 47 00 00 34 42 00 00 20";
-        var driverHoodList = await GetInstance().AoBScan(minRange, maxRange, driverHoodSig, true);
+        var driverHoodList = await GetInstance().AoBScan(newScanStart, newScanEnd, driverHoodSig, true);
         var driverHoodEnumerable = driverHoodList as UIntPtr[] ?? driverHoodList.ToArray();
         if (driverHoodEnumerable.Length != 2)
         {
@@ -57,7 +60,7 @@ public class CameraCheats : CheatsUtilities, ICheatsBase
         ++successCount;
 
         const string bumperSig = "00 CD CC 4C 3E ? ? ? 47 00 ? 54";
-        var bumperList = await GetInstance().AoBScan(minRange, maxRange, bumperSig, true);
+        var bumperList = await GetInstance().AoBScan(newScanStart, newScanEnd, bumperSig, true);
         var bumperEnumerable = bumperList as UIntPtr[] ?? bumperList.ToArray();
         if (bumperEnumerable.Length == 0)
         {
