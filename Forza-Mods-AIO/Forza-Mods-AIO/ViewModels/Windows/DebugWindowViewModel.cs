@@ -22,9 +22,6 @@ public partial class DebugWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _windowTitle = string.Empty;
-
-    [RelayCommand]
-    private void UnpauseBreakpoint() => CurrentDebugSession.DebugBreakpoints.First(s => s.IsHit).Unpause();
     
     public bool IsFh4 => GameVerPlat.GetInstance().Type == GameVerPlat.GameType.Fh4;
     public bool IsFh5 => GameVerPlat.GetInstance().Type == GameVerPlat.GameType.Fh5;

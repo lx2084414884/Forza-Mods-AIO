@@ -9,7 +9,7 @@ namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
 public class Bypass : CheatsUtilities, ICheatsBase
 {
-    public readonly DebugSession BypassDebug = new("Bypass", [], []);
+    public readonly DebugSession BypassDebug = new("Bypass", []);
 
     private UIntPtr _crcFuncAddress, _memCopyAddress, _callAddress;
     public UIntPtr CrcFuncDetourAddress;

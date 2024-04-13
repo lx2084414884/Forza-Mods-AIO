@@ -57,88 +57,25 @@
                 </ListBox>
             </GroupBox>
         </Border>
-
-        <Grid Grid.Column="1"
-              Grid.Row="0">
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <GroupBox Grid.Column="0"
-                      Margin="10 15 0 0"
-                      Visibility="{Binding ViewModel.AreAnyBreakpointsAvailable, 
-                      Converter={StaticResource BooleanToVisibilityConverter}}">
-                <GroupBox.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" 
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               MinHeight="0"
-                               mah:ControlsHelper.ContentCharacterCasing="Upper"
-                               Content="{DynamicResource BreakpointList}"/>
-                            
-                        <Button Grid.Column="1" 
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Content="{DynamicResource BreakpointUnpause}"
-                                IsEnabled="{Binding ViewModel.CurrentDebugSession.IsAnyBreakpointHit}"
-                                Command="{Binding ViewModel.UnpauseBreakpointCommand}"
-                                BorderBrush="{Binding Theming.DarkishColour}"
-                                Background="{Binding Theming.DarkishColour}"/>
-                        
-                    </Grid>
-                        
-                </GroupBox.Header>
+  
+        <GroupBox Grid.Column="1"
+                  Grid.Row="0"
+                  Margin="10 15 15 0"
+                  Header="{DynamicResource AntiAntiCheat}">
+            <StackPanel Orientation="Horizontal">
                     
-                <ListBox ItemsSource="{Binding ViewModel.CurrentDebugSession.DebugBreakpoints}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type models:DebugBreakpoint}">
-                            <CheckBox IsChecked="{Binding IsEnabled, Mode=TwoWay}" 
-                                      Content="{Binding Name}"
-                                      HorizontalAlignment="Left"
-                                      VerticalAlignment="Center">
-                            
-                                <CheckBox.Style>
-                                    <Style TargetType="CheckBox"
-                                           BasedOn="{StaticResource MahApps.Styles.CheckBox}">
-                                        <Setter Property="IsEnabled" Value="True" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=ViewModel.CurrentDebugSession.IsAnyBreakpointHit, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DebugWindow}}}" Value="True">
-                                                <Setter Property="IsEnabled" Value="False" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </CheckBox.Style>
-                            </CheckBox>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </GroupBox>
-            
-            <GroupBox Grid.Column="1"
-                      Margin="10 15 15 0"
-                      Header="{DynamicResource AntiAntiCheat}">
-                <StackPanel Orientation="Horizontal">
-                    
-                    <Button Visibility="{Binding ViewModel.IsFh4, 
+                <Button Visibility="{Binding ViewModel.IsFh4, 
                             Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Content="{DynamicResource DisableCrt}"
-                            Command="{Binding ViewModel.DisableCrtCommand}"/>
+                        Content="{DynamicResource DisableCrt}"
+                        Command="{Binding ViewModel.DisableCrtCommand}"/>
                     
-                    <Button Visibility="{Binding ViewModel.IsFh5, 
+                <Button Visibility="{Binding ViewModel.IsFh5, 
                             Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Content="{DynamicResource DisableCrc}"
-                            Command="{Binding ViewModel.DisableCrcCommand}"/>
+                        Content="{DynamicResource DisableCrc}"
+                        Command="{Binding ViewModel.DisableCrcCommand}"/>
                     
-                </StackPanel>
-            </GroupBox>
-        </Grid>
+            </StackPanel>
+        </GroupBox>
         
         <Grid Grid.Column="1"
               Grid.Row="1"
