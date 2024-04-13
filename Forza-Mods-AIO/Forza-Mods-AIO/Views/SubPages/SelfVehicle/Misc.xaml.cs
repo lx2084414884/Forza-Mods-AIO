@@ -267,7 +267,65 @@ public partial class Misc
 
     private void WriteValueFh4(RoutedPropertyChangedEventArgs<double?> e)
     {
-        
+        switch (MainComboBox.SelectedIndex)
+        {
+            case 0:
+            {        
+                ViewModel.SpinPrizeScaleValue = Convert.ToSingle(e.NewValue);
+                if (MiscCheatsFh4.PrizeScaleDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh4.PrizeScaleDetourAddress + 0x1C, ViewModel.SpinPrizeScaleValue);
+                break;
+            }
+            case 1:
+            {            
+                ViewModel.SpinSellFactorValue = Convert.ToInt32(e.NewValue);
+                if (MiscCheatsFh4.SellFactorDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh4.SellFactorDetourAddress + 0x1C, ViewModel.SpinSellFactorValue);
+                break;
+            }
+            case 2:
+            {              
+                ViewModel.SkillScoreMultiplierValue = Convert.ToInt32(e.NewValue);
+                if (MiscCheatsFh4.SkillScoreMultiplierDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh4.SkillScoreMultiplierDetourAddress + 0x1C, ViewModel.SkillScoreMultiplierValue);
+                break;
+            }
+            case 3:
+            {           
+                ViewModel.DriftScoreMultiplierValue = Convert.ToSingle(e.NewValue);
+                if (MiscCheatsFh4.DriftScoreMultiplierDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh4.DriftScoreMultiplierDetourAddress + 0x1D, ViewModel.DriftScoreMultiplierValue);
+                break;
+            }
+            case 6:
+            {            
+                ViewModel.MissionTimeScaleValue = Convert.ToSingle(e.NewValue);
+                if (MiscCheatsFh4.MissionTimeScaleDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh4.MissionTimeScaleDetourAddress + 0x20, ViewModel.MissionTimeScaleValue);
+                break;
+            }
+            case 7:
+            {           
+                ViewModel.TrailblazerTimeScaleValue = Convert.ToSingle(e.NewValue);
+                if (MiscCheatsFh4.TrailblazerTimeScaleDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh4.TrailblazerTimeScaleDetourAddress + 0x20, ViewModel.TrailblazerTimeScaleValue);
+                break;
+            }
+            case 8:
+            {           
+                ViewModel.SpeedZoneMultiplierValue = Convert.ToSingle(e.NewValue);
+                if (MiscCheatsFh4.SpeedZoneMultiplierDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh4.SpeedZoneMultiplierDetourAddress + 0x1F, ViewModel.SpeedZoneMultiplierValue);
+                break;
+            }
+            case 9:
+            {           
+                ViewModel.RaceTimeScaleValue = Convert.ToSingle(e.NewValue);
+                if (MiscCheatsFh4.RaceTimeScaleDetourAddress == 0) return;
+                GetInstance().WriteMemory(MiscCheatsFh4.RaceTimeScaleDetourAddress + 0x1F, ViewModel.RaceTimeScaleValue);
+                break;
+            }
+        }
     }
     
     private async void MainToggleSwitch_OnToggled(object sender, RoutedEventArgs e)
