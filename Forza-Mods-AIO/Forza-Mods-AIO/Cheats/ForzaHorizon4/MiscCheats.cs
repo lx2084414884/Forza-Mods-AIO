@@ -16,6 +16,10 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
     public UIntPtr MissionTimeScaleDetourAddress;
     private UIntPtr _trailblazerTimeScaleAddress;
     public UIntPtr TrailblazerTimeScaleDetourAddress;
+    private UIntPtr _prizeScaleAddress;
+    public UIntPtr PrizeScaleDetourAddress;
+    private UIntPtr _sellFactorAddress;
+    public UIntPtr SellFactorDetourAddress;
     
     public async Task CheatRaceTimeScale()
     {
@@ -155,6 +159,52 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         
         ShowError("Trailblazer time scale", sig);
     }
+    
+    public async Task CheatPrizeScale()
+    {
+        _prizeScaleAddress = 0;
+        PrizeScaleDetourAddress = 0;
+
+        const string sig = "0F 5B ? F3 0F ? ? ? F3 0F ? ? 48 85";
+        _prizeScaleAddress = await SmartAobScan(sig) + 3;
+
+        if (_prizeScaleAddress > 3)
+        {
+            var asm = new byte[]
+            {
+                0x80, 0x3D, 0x14, 0x00, 0x00, 0x00, 0x01, 0x75, 0x08, 0xF3, 0x0F, 0x59, 0x05, 0x0B, 0x00, 0x00, 0x00,
+                0xF3, 0x0F, 0x59, 0x40, 0x10
+            };
+
+            PrizeScaleDetourAddress = GetInstance().CreateDetour(_prizeScaleAddress, asm, 5);
+            return;
+        }
+        
+        ShowError("Spin prize scale", sig);
+    }
+    
+    public async Task CheatSellFactor()
+    {
+        _sellFactorAddress = 0;
+        SellFactorDetourAddress = 0;
+
+        const string sig = "48 8B ? ? E8 ? ? ? ? 8B B8";
+        _sellFactorAddress = await SmartAobScan(sig) + 9;
+
+        if (_sellFactorAddress > 9)
+        {
+            var asm = new byte[]
+            {
+                0x8B, 0xB8, 0xD0, 0x4B, 0x00, 0x00, 0x80, 0x3D, 0x0E, 0x00, 0x00, 0x00, 0x01, 0x75, 0x07, 0x0F, 0xAF,
+                0x3D, 0x06, 0x00, 0x00, 0x00
+            };
+
+            SellFactorDetourAddress = GetInstance().CreateDetour(_sellFactorAddress, asm, 6);
+            return;
+        }
+        
+        ShowError("Sell factor", sig);
+    }
 
     public void Cleanup()
     {
@@ -194,6 +244,18 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         {
             mem.WriteArrayMemory(_trailblazerTimeScaleAddress, new byte[] { 0xF3, 0x0F, 0x5C, 0xC6, 0xF3, 0x0F, 0x11, 0x45, 0x6F });
             Free(TrailblazerTimeScaleDetourAddress);
+        }
+
+        if (_prizeScaleAddress > 3)
+        {
+            mem.WriteArrayMemory(_prizeScaleAddress, new byte[] {  0xF3, 0x0F, 0x59, 0x40, 0x10 });
+            Free(PrizeScaleDetourAddress);
+        }
+
+        if (_sellFactorAddress > 9)
+        {
+            mem.WriteArrayMemory(_sellFactorAddress, new byte[] { 0x8B, 0xB8, 0xD0, 0x4B, 0x00, 0x00 });
+            Free(SellFactorDetourAddress);
         }
     }
 

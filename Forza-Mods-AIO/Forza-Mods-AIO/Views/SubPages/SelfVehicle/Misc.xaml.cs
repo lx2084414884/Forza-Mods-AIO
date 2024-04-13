@@ -356,12 +356,12 @@ public partial class Misc
         {
             case 0:
             {
-                await PrizeScale(toggleSwitch.IsOn);
+                await PrizeScaleFh4(toggleSwitch.IsOn);
                 break;
             }
             case 1:
             {
-                await SellFactor(toggleSwitch.IsOn);
+                await SellFactorFh4(toggleSwitch.IsOn);
                 break;
             }
             case 2:
@@ -372,16 +372,6 @@ public partial class Misc
             case 3:
             {
                 await DriftScoreMultiplierFh4(toggleSwitch.IsOn);
-                break;
-            }
-            case 4:
-            {
-                await SkillTreeWideEdit(toggleSwitch.IsOn);
-                break;
-            }
-            case 5:
-            {
-                await SkillTreePerksCost(toggleSwitch.IsOn);
                 break;
             }
             case 6:
@@ -420,6 +410,19 @@ public partial class Misc
         ViewModel.SpinPrizeScaleEnabled = toggled;
     }
 
+    private async Task PrizeScaleFh4(bool toggled)
+    {
+        if (MiscCheatsFh4.PrizeScaleDetourAddress == 0)
+        {
+            await MiscCheatsFh4.CheatPrizeScale();
+        }
+
+        if (MiscCheatsFh4.PrizeScaleDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh4.PrizeScaleDetourAddress + 0x1B, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh4.PrizeScaleDetourAddress + 0x1C, Convert.ToSingle(MainValueBox.Value));
+        ViewModel.SpinPrizeScaleEnabled = toggled;
+    }
+
     private async Task SellFactor(bool toggled)
     {
         if (MiscCheatsFh5.SellFactorDetourAddress == 0)
@@ -430,6 +433,19 @@ public partial class Misc
         if (MiscCheatsFh5.SellFactorDetourAddress == 0) return;
         GetInstance().WriteMemory(MiscCheatsFh5.SellFactorDetourAddress + 0x1C, toggled ? (byte)1 : (byte)0);
         GetInstance().WriteMemory(MiscCheatsFh5.SellFactorDetourAddress + 0x1D, Convert.ToInt32(MainValueBox.Value));
+        ViewModel.SpinSellFactorEnabled = toggled;
+    }
+
+    private async Task SellFactorFh4(bool toggled)
+    {
+        if (MiscCheatsFh4.SellFactorDetourAddress == 0)
+        {
+            await MiscCheatsFh4.CheatSellFactor();
+        }
+        
+        if (MiscCheatsFh4.SellFactorDetourAddress == 0) return;
+        GetInstance().WriteMemory(MiscCheatsFh4.SellFactorDetourAddress + 0x1B, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh4.SellFactorDetourAddress + 0x1C, Convert.ToInt32(MainValueBox.Value));
         ViewModel.SpinSellFactorEnabled = toggled;
     }
 
