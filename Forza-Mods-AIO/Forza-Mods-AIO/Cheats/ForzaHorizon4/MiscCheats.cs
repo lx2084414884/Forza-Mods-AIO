@@ -20,6 +20,8 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
     public UIntPtr PrizeScaleDetourAddress;
     private UIntPtr _sellFactorAddress;
     public UIntPtr SellFactorDetourAddress;
+    private UIntPtr _unbreakableSkillScoreAddress;
+    public UIntPtr UnbreakableSkillScoreDetourAddress;
     
     public async Task CheatRaceTimeScale()
     {
@@ -206,6 +208,29 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         ShowError("Sell factor", sig);
     }
 
+    public async Task CheatUnbreakableSkillScore()
+    {
+        _unbreakableSkillScoreAddress = 0;
+        UnbreakableSkillScoreDetourAddress = 0;
+        
+        const string sig = "0F B6 ? 40 38 ? ? ? ? ? 74 ? 84 C0";
+        _unbreakableSkillScoreAddress = await SmartAobScan(sig);
+
+        if (_unbreakableSkillScoreAddress > 0)
+        {
+            var asm = new byte[]
+            {
+                0x80, 0x3D, 0x13, 0x00, 0x00, 0x00, 0x01, 0x75, 0x02, 0x30, 0xC0, 0x0F, 0xB6, 0xF0, 0x40, 0x38, 0xAF,
+                0x94, 0x04, 0x00, 0x00
+            };
+
+            UnbreakableSkillScoreDetourAddress = GetInstance().CreateDetour(_unbreakableSkillScoreAddress, asm, 10);
+            return;
+        }
+        
+        ShowError("Unbreakable skill score", sig);
+    }
+
     public void Cleanup()
     {
         var mem = GetInstance();
@@ -256,6 +281,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         {
             mem.WriteArrayMemory(_sellFactorAddress, new byte[] { 0x8B, 0xB8, 0xD0, 0x4B, 0x00, 0x00 });
             Free(SellFactorDetourAddress);
+        }
+
+        if (_unbreakableSkillScoreAddress > 0)
+        {
+            mem.WriteArrayMemory(_unbreakableSkillScoreAddress, new byte[] { 0x0F, 0xB6, 0xF0, 0x40, 0x38, 0xAF, 0x94, 0x04, 0x00, 0x00 });
+            Free(UnbreakableSkillScoreDetourAddress);
         }
     }
 

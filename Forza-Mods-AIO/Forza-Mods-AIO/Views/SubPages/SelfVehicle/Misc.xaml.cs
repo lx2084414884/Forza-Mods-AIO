@@ -697,14 +697,39 @@ public partial class Misc
         }
 
         toggleSwitch.IsEnabled = false;
-        if (MiscCheatsFh5.UnbreakableSkillScoreDetourAddress == 0)
+        switch (GameVerPlat.GetInstance().Type)
         {
-            await MiscCheatsFh5.CheatUnbreakableSkillScore();
+            case GameVerPlat.GameType.Fh4:
+            {
+                if (MiscCheatsFh4.UnbreakableSkillScoreDetourAddress == 0)
+                {
+                    await MiscCheatsFh4.CheatUnbreakableSkillScore();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.Fh5:
+            {
+                if (MiscCheatsFh5.UnbreakableSkillScoreDetourAddress == 0)
+                {
+                    await MiscCheatsFh5.CheatUnbreakableSkillScore();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.None:
+            default:
+                throw new IndexOutOfRangeException();
         }
         toggleSwitch.IsEnabled = true;
         
-        if (MiscCheatsFh5.UnbreakableSkillScoreDetourAddress == 0) return;
-        GetInstance().WriteMemory(MiscCheatsFh5.UnbreakableSkillScoreDetourAddress + 0x1A, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+        var detourAddress = GameVerPlat.GetInstance().Type switch
+        {
+            GameVerPlat.GameType.Fh4 => MiscCheatsFh4.UnbreakableSkillScoreDetourAddress,
+            GameVerPlat.GameType.Fh5 => MiscCheatsFh5.UnbreakableSkillScoreDetourAddress,
+            _ => throw new IndexOutOfRangeException()
+        };
+        
+        if (detourAddress == 0) return;
+        GetInstance().WriteMemory(detourAddress + 0x1A, toggleSwitch.IsOn ? (byte)1 : (byte)0);
     }
 
     private async void RemoveBuildCapSwitch_OnToggled(object sender, RoutedEventArgs e)
