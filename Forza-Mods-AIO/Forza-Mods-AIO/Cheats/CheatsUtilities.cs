@@ -1,7 +1,7 @@
-﻿using Memory.Types;
-using System.Windows;
+﻿using System.Windows;
 using Forza_Mods_AIO.Models;
 using MahApps.Metro.Controls;
+using Memory.Types;
 using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats;
@@ -11,18 +11,17 @@ public class CheatsUtilities
     protected static async Task<nuint> SmartAobScan(string search)
     {
         Imps.GetSystemInfo(out var info);
-        UIntPtr address = 0;
 
         var handle = GetInstance().MProc.Handle;
         var minRange = (long)GetInstance().MProc.Process.MainModule!.BaseAddress;
         var maxRange = minRange + GetInstance().MProc.Process.MainModule!.ModuleMemorySize;
-        Imps.Native_VirtualQueryEx(handle, address, out Imps.MemoryBasicInformation64 memInfo, info.PageSize);
 
         var scanStartAddr = minRange;
-        address = (UIntPtr)minRange;
+        var address = (UIntPtr)minRange;
+        
         while (address < (ulong)maxRange)
         {
-            Imps.Native_VirtualQueryEx(handle, address, out memInfo, info.PageSize);
+            Imps.Native_VirtualQueryEx(handle, address, out Imps.MemoryBasicInformation64 memInfo, info.PageSize);
             if (address == memInfo.BaseAddress + memInfo.RegionSize)
             {
                 break;
