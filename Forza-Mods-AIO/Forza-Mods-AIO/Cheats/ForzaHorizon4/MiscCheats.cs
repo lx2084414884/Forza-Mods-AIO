@@ -199,7 +199,7 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
     public void Reset()
     {  
-        var fields = typeof(Sql).GetFields().Where(f => f.FieldType == typeof(UIntPtr));
+        var fields = typeof(MiscCheats).GetFields().Where(f => f.FieldType == typeof(UIntPtr));
         foreach (var field in fields)
         {
             field.SetValue(this, UIntPtr.Zero);
