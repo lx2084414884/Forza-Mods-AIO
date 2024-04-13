@@ -26,6 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Desktop (please complete the following information):**
  - OS: [e.g. Windows 11]
  - Forza title and version [e.g. FH5, 1.636.732.0]
+ - AIO version [e.g. 2.1.0.0]
 
 **Additional context**
 Add any other context about the problem here.
