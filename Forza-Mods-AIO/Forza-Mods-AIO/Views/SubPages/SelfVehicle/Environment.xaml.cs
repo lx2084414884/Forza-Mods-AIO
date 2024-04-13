@@ -1,11 +1,12 @@
 ﻿using System.Numerics;
 using System.Windows;
+using System.Windows.Media;
 using Forza_Mods_AIO.Cheats.ForzaHorizon5;
+using Forza_Mods_AIO.Models;
+using Forza_Mods_AIO.ViewModels.SubPages.SelfVehicle;
 using MahApps.Metro.Controls;
 using static Forza_Mods_AIO.Resources.Cheats;
 using static Forza_Mods_AIO.Resources.Memory;
-using System.Windows.Media;
-using Forza_Mods_AIO.ViewModels.SubPages.SelfVehicle;
 
 namespace Forza_Mods_AIO.Views.SubPages.SelfVehicle;
 
@@ -21,6 +22,8 @@ public partial class Environment
 
     public EnvironmentViewModel ViewModel { get; }
     private static EnvironmentCheats EnvironmentCheatsFh5 => GetClass<EnvironmentCheats>();
+    private static Cheats.ForzaHorizon4.EnvironmentCheats EnvironmentCheatsFh4 =>
+        GetClass<Cheats.ForzaHorizon4.EnvironmentCheats>();
     private static CarCheats CarCheatsFh5 => GetClass<CarCheats>();
     
     private static Vector4 ConvertUiColorToGameValues(Color uiColor)
@@ -40,40 +43,106 @@ public partial class Environment
         }
 
         ViewModel.AreSunRgbUiElementsEnabled = false;
-        if (EnvironmentCheatsFh5.SunRgbDetourAddress == 0)
+        switch (GameVerPlat.GetInstance().Type)
         {
-            await EnvironmentCheatsFh5.CheatSunRgb();
+            case GameVerPlat.GameType.Fh4:
+            {
+                if (EnvironmentCheatsFh4.SunRgbDetourAddress == 0)
+                {
+                    await EnvironmentCheatsFh4.CheatSunRgb();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.Fh5:
+            {
+                
+                if (EnvironmentCheatsFh5.SunRgbDetourAddress == 0)
+                {
+                    await EnvironmentCheatsFh5.CheatSunRgb();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.None:
+            default:
+                throw new IndexOutOfRangeException();
         }
         ViewModel.AreSunRgbUiElementsEnabled = true;
         
-        if (EnvironmentCheatsFh5.SunRgbDetourAddress == 0) return;
-        GetInstance().WriteMemory(EnvironmentCheatsFh5.SunRgbDetourAddress + 0x32, toggleSwitch.IsOn ? (byte)1 : (byte)0);
-        GetInstance().WriteMemory(EnvironmentCheatsFh5.SunRgbDetourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault()));
+        var detourAddress = GameVerPlat.GetInstance().Type switch
+        {
+            GameVerPlat.GameType.Fh4 => EnvironmentCheatsFh4.SunRgbDetourAddress,
+            GameVerPlat.GameType.Fh5 => EnvironmentCheatsFh5.SunRgbDetourAddress,
+            _ => throw new IndexOutOfRangeException()
+        };
+        
+        if (detourAddress == 0) return;
+        GetInstance().WriteMemory(detourAddress + 0x32, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(detourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault()));
     }
 
     private void Picker_OnSelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
     {        
-        if (EnvironmentCheatsFh5.SunRgbDetourAddress == 0) return;
-        GetInstance().WriteMemory(EnvironmentCheatsFh5.SunRgbDetourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault()));
+        var detourAddress = GameVerPlat.GetInstance().Type switch
+        {
+            GameVerPlat.GameType.Fh4 => EnvironmentCheatsFh4.SunRgbDetourAddress,
+            GameVerPlat.GameType.Fh5 => EnvironmentCheatsFh5.SunRgbDetourAddress,
+            _ => throw new IndexOutOfRangeException()
+        };
+        
+        if (detourAddress == 0) return;
+        GetInstance().WriteMemory(detourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault()));
     }
 
     private async void PullButton_OnClick(object sender, RoutedEventArgs e)
     {
         ViewModel.AreManualTimeUiElementsEnabled = false;
-        if (EnvironmentCheatsFh5.TimeDetourAddress == 0)
+        switch (GameVerPlat.GetInstance().Type)
         {
-            await EnvironmentCheatsFh5.CheatTime();
+            case GameVerPlat.GameType.Fh4:
+            {
+                if (EnvironmentCheatsFh4.TimeDetourAddress == 0)
+                {
+                    await EnvironmentCheatsFh4.CheatTime();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.Fh5:
+            {
+                
+                if (EnvironmentCheatsFh5.TimeDetourAddress == 0)
+                {
+                    await EnvironmentCheatsFh5.CheatTime();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.None:
+            default:
+                throw new IndexOutOfRangeException();
         }
         ViewModel.AreManualTimeUiElementsEnabled = true;
         
-        if (EnvironmentCheatsFh5.TimeDetourAddress == 0) return;
-        TimeBox.Value = GetInstance().ReadMemory<double>(EnvironmentCheatsFh5.TimeDetourAddress + 0x2C);
+        var detourAddress = GameVerPlat.GetInstance().Type switch
+        {
+            GameVerPlat.GameType.Fh4 => EnvironmentCheatsFh4.TimeDetourAddress,
+            GameVerPlat.GameType.Fh5 => EnvironmentCheatsFh5.TimeDetourAddress,
+            _ => throw new IndexOutOfRangeException()
+        };
+        
+        if (detourAddress == 0) return;
+        TimeBox.Value = GetInstance().ReadMemory<double>(detourAddress + 0x2C);
     }
 
     private void TimeBox_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
     {
-        if (EnvironmentCheatsFh5.TimeDetourAddress == 0) return;
-        GetInstance().WriteMemory(EnvironmentCheatsFh5.TimeDetourAddress + 0x24, e.NewValue.GetValueOrDefault());
+        var detourAddress = GameVerPlat.GetInstance().Type switch
+        {
+            GameVerPlat.GameType.Fh4 => EnvironmentCheatsFh4.TimeDetourAddress,
+            GameVerPlat.GameType.Fh5 => EnvironmentCheatsFh5.TimeDetourAddress,
+            _ => throw new IndexOutOfRangeException()
+        };
+        
+        if (detourAddress == 0) return;
+        GetInstance().WriteMemory(detourAddress + 0x24, e.NewValue.GetValueOrDefault());
     }
 
     private async void TimeSwitch_OnToggled(object sender, RoutedEventArgs e)
@@ -84,15 +153,41 @@ public partial class Environment
         }
         
         ViewModel.AreManualTimeUiElementsEnabled = false;
-        if (EnvironmentCheatsFh5.TimeDetourAddress == 0)
+        switch (GameVerPlat.GetInstance().Type)
         {
-            await EnvironmentCheatsFh5.CheatTime();
+            case GameVerPlat.GameType.Fh4:
+            {
+                if (EnvironmentCheatsFh4.TimeDetourAddress == 0)
+                {
+                    await EnvironmentCheatsFh4.CheatTime();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.Fh5:
+            {
+                
+                if (EnvironmentCheatsFh5.TimeDetourAddress == 0)
+                {
+                    await EnvironmentCheatsFh5.CheatTime();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.None:
+            default:
+                throw new IndexOutOfRangeException();
         }
         ViewModel.AreManualTimeUiElementsEnabled = true;
         
-        if (EnvironmentCheatsFh5.TimeDetourAddress == 0) return;
-        GetInstance().WriteMemory(EnvironmentCheatsFh5.TimeDetourAddress + 0x23, toggleSwitch.IsOn ? (byte)1 : (byte)0);
-        GetInstance().WriteMemory(EnvironmentCheatsFh5.TimeDetourAddress + 0x24, TimeBox.Value.GetValueOrDefault());
+        var detourAddress = GameVerPlat.GetInstance().Type switch
+        {
+            GameVerPlat.GameType.Fh4 => EnvironmentCheatsFh4.TimeDetourAddress,
+            GameVerPlat.GameType.Fh5 => EnvironmentCheatsFh5.TimeDetourAddress,
+            _ => throw new IndexOutOfRangeException()
+        };
+        
+        if (detourAddress == 0) return;
+        GetInstance().WriteMemory(detourAddress + 0x23, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(detourAddress + 0x24, TimeBox.Value.GetValueOrDefault());
     }
 
     private async void FreezeAiSwitch_OnToggled(object sender, RoutedEventArgs e)
