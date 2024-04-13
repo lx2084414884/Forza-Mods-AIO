@@ -22,6 +22,8 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
     public UIntPtr SellFactorDetourAddress;
     private UIntPtr _unbreakableSkillScoreAddress;
     public UIntPtr UnbreakableSkillScoreDetourAddress;
+    private UIntPtr _removeBuildCapAddress;
+    public UIntPtr RemoveBuildCapDetourAddress;
     
     public async Task CheatRaceTimeScale()
     {
@@ -231,6 +233,28 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         ShowError("Unbreakable skill score", sig);
     }
 
+    public async Task CheatRemoveBuildCap()
+    {
+        _removeBuildCapAddress = 0;
+        RemoveBuildCapDetourAddress = 0;
+        
+        const string sig = "F3 0F ? ? ? FF 04 ? EB ? F3 0F";
+        _removeBuildCapAddress = await SmartAobScan(sig);
+
+        if (_removeBuildCapAddress > 0)
+        {
+            var asm = new byte[]
+            {
+                0x80, 0x3D, 0x0F, 0x00, 0x00, 0x00, 0x01, 0x75, 0x03, 0x0F, 0x57, 0xC0, 0xF3, 0x0F, 0x11, 0x43, 0x30
+            };
+
+            RemoveBuildCapDetourAddress = GetInstance().CreateDetour(_removeBuildCapAddress, asm, 5);
+            return;
+        }
+        
+        ShowError("Remove build cap", sig);
+    }
+
     public void Cleanup()
     {
         var mem = GetInstance();
@@ -288,6 +312,10 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
             mem.WriteArrayMemory(_unbreakableSkillScoreAddress, new byte[] { 0x0F, 0xB6, 0xF0, 0x40, 0x38, 0xAF, 0x94, 0x04, 0x00, 0x00 });
             Free(UnbreakableSkillScoreDetourAddress);
         }
+        
+        if (_removeBuildCapAddress <= 0) return;
+        mem.WriteArrayMemory(_removeBuildCapAddress, new byte[] { 0xF3, 0x0F, 0x11, 0x43, 0x30 });
+        Free(RemoveBuildCapDetourAddress);
     }
 
     public void Reset()

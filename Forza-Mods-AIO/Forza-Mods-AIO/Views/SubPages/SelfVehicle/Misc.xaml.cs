@@ -740,13 +740,38 @@ public partial class Misc
         }
 
         toggleSwitch.IsEnabled = false;
-        if (MiscCheatsFh5.RemoveBuildCapDetourAddress == 0)
+        switch (GameVerPlat.GetInstance().Type)
         {
-            await MiscCheatsFh5.CheatRemoveBuildCap();
+            case GameVerPlat.GameType.Fh4:
+            {
+                if (MiscCheatsFh4.RemoveBuildCapDetourAddress == 0)
+                {
+                    await MiscCheatsFh4.CheatRemoveBuildCap();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.Fh5:
+            {
+                if (MiscCheatsFh5.RemoveBuildCapDetourAddress == 0)
+                {
+                    await MiscCheatsFh5.CheatRemoveBuildCap();
+                }
+                break;
+            }
+            case GameVerPlat.GameType.None:
+            default:
+                throw new IndexOutOfRangeException();
         }
         toggleSwitch.IsEnabled = true;
         
-        if (MiscCheatsFh5.RemoveBuildCapDetourAddress == 0) return;
-        GetInstance().WriteMemory(MiscCheatsFh5.RemoveBuildCapDetourAddress + 0x16, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+        var detourAddress = GameVerPlat.GetInstance().Type switch
+        {
+            GameVerPlat.GameType.Fh4 => MiscCheatsFh4.RemoveBuildCapDetourAddress,
+            GameVerPlat.GameType.Fh5 => MiscCheatsFh5.RemoveBuildCapDetourAddress,
+            _ => throw new IndexOutOfRangeException()
+        };
+        
+        if (detourAddress == 0) return;
+        GetInstance().WriteMemory(detourAddress + 0x16, toggleSwitch.IsOn ? (byte)1 : (byte)0);
     }
 }
