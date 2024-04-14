@@ -33,7 +33,7 @@ public partial class MainWindow
         DragMove();
     }
 
-    private async void WindowStateAction_OnClick(object sender, RoutedEventArgs e)
+    private void WindowStateAction_OnClick(object sender, RoutedEventArgs e)
     {
         if (sender is not Button button) return;
 
@@ -41,20 +41,24 @@ public partial class MainWindow
         {
             case "1":
             {
-                WindowState = WindowState.Minimized;
+                SystemCommands.MinimizeWindow(this);
                 break;
             }
             case "2":
             {
-                ViewModel.HandleMaximizeMinimizeCommand.Execute(this);
+                if (WindowState == WindowState.Maximized)
+                {
+                    SystemCommands.RestoreWindow(this);
+                }
+                else
+                {
+                    SystemCommands.MaximizeWindow(this);
+                }
                 break;
             }
             case "3":
             {
-                WindowState = WindowState.Minimized;
-                await Task.Delay(250);
-                Close();
-                Application.Current.Shutdown();
+                SystemCommands.CloseWindow(this);
                 break;
             }
         }

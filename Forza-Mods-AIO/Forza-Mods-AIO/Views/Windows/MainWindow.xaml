@@ -205,7 +205,9 @@
                             VerticalAlignment="Center"
                             Background="{Binding Theming.DarkerColour, Mode=OneWay}"
                             Width="{Binding ActualWidth, ElementName=MaximizeButton}"
-                            Content="X"
+                            Content="X"             
+                            AutomationProperties.AutomationId="Close"
+                            AutomationProperties.Name="Close"
                             Click="WindowStateAction_OnClick" />
 
                 </StackPanel>
