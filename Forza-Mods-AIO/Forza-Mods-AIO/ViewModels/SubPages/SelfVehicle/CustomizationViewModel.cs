@@ -1,9 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Forza_Mods_AIO.Models;
 
 namespace Forza_Mods_AIO.ViewModels.SubPages.SelfVehicle;
 
 public partial class CustomizationViewModel : ObservableObject
 {
+    public bool IsFh5 => GameVerPlat.GetInstance().Type == GameVerPlat.GameType.Fh5;
+    
     [ObservableProperty]
     private bool _areMainUiElementsEnabled = true;
     
@@ -35,5 +38,5 @@ public partial class CustomizationViewModel : ObservableObject
     private bool _forceLodEnabled;
     
     [ObservableProperty]
-    private Int32 _forceLodValue;
+    private int _forceLodValue;
 }

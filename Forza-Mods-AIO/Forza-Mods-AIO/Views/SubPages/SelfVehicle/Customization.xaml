@@ -43,7 +43,9 @@
                                                  IsOn="{Binding ViewModel.MudEnabled}"/>
                     
                     <controls:StatusComboboxItem Content="{DynamicResource ForceLod}"
-                                                 IsOn="{Binding ViewModel.MudEnabled}"/>
+                                                 IsOn="{Binding ViewModel.MudEnabled}"
+                                                 Visibility="{Binding ViewModel.IsFh5, 
+                                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     
                 </ComboBox>
                 
@@ -69,7 +71,9 @@
             </Grid>
         </Border>
         
-        <Border Style="{StaticResource CommonBorderStyle}">
+        <Border Style="{StaticResource CommonBorderStyle}"
+                Visibility="{Binding ViewModel.IsFh5, 
+                Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid Margin="5 0">
                 
                 <Grid.ColumnDefinitions>
@@ -100,7 +104,9 @@
             </Grid>
         </Border>
 
-        <Border Style="{StaticResource CommonBorderStyle}">
+        <Border Style="{StaticResource CommonBorderStyle}"
+                Visibility="{Binding ViewModel.IsFh5, 
+                Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid Margin="5 0">
                 
                 <Grid.ColumnDefinitions>

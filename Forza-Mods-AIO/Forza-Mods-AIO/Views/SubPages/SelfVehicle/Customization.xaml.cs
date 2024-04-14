@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Forza_Mods_AIO.Cheats.ForzaHorizon5;
+using Forza_Mods_AIO.Models;
 using Forza_Mods_AIO.ViewModels.SubPages.SelfVehicle;
 using MahApps.Metro.Controls;
 using static Forza_Mods_AIO.Resources.Cheats;
@@ -23,6 +24,8 @@ public partial class Customization
     
     public CustomizationViewModel ViewModel { get; }
     private static CustomizationCheats CustomizationCheatsFh5 => GetClass<CustomizationCheats>();
+    private static Cheats.ForzaHorizon4.CustomizationCheats CustomizationCheatsFh4 =>
+        GetClass<Cheats.ForzaHorizon4.CustomizationCheats>();
     
     private async void MainSwitch_OnToggled(object sender, RoutedEventArgs e)
     {
@@ -33,6 +36,28 @@ public partial class Customization
 
         ViewModel.AreMainUiElementsEnabled = false;
 
+        switch (GameVerPlat.GetInstance().Type)
+        {
+            case GameVerPlat.GameType.Fh4:
+            {
+                await EnableCheatsFh4(toggleSwitch);
+                break;
+            }
+            case GameVerPlat.GameType.Fh5:
+            {
+                await EnableCheats(toggleSwitch);
+                break;
+            }
+            case GameVerPlat.GameType.None:
+            default:
+                throw new IndexOutOfRangeException();
+        }
+
+        ViewModel.AreMainUiElementsEnabled = true;
+    }
+
+    private async Task EnableCheats(ToggleSwitch toggleSwitch)
+    {
         switch (MainComboBox.SelectedIndex)
         {
             case 0:
@@ -87,9 +112,54 @@ public partial class Customization
                 GetInstance().WriteMemory(CustomizationCheatsFh5.ForceLodDetourAddress + 0x53, Convert.ToSingle(MainSlider.Value));
                 break;
             }
-        }
+        } 
+    }
 
-        ViewModel.AreMainUiElementsEnabled = true;
+    private async Task EnableCheatsFh4(ToggleSwitch toggleSwitch)
+    {
+        switch (MainComboBox.SelectedIndex)
+        {
+            case 0:
+            {
+                if (CustomizationCheatsFh4.PaintDetourAddress == 0)
+                {
+                    await CustomizationCheatsFh4.CheatGlowingPaint();
+                }
+                
+                if (CustomizationCheatsFh4.PaintDetourAddress == 0) break;
+                ViewModel.GlowingPaintEnabled = toggleSwitch.IsOn;
+                var write = toggleSwitch.IsOn ? (byte)1 : (byte)0;
+                GetInstance().WriteMemory(CustomizationCheatsFh4.PaintDetourAddress + 0x34, write);
+                GetInstance().WriteMemory(CustomizationCheatsFh4.PaintDetourAddress + 0x35, ViewModel.GlowingPaintValue);
+                break;
+            }
+            case 1:
+            {
+                if (CustomizationCheatsFh4.CleanlinessDetourAddress == 0)
+                {
+                    await CustomizationCheatsFh4.CheatCleanliness();
+                }
+        
+                if (CustomizationCheatsFh4.CleanlinessDetourAddress == 0) break;
+                ViewModel.DirtEnabled = toggleSwitch.IsOn;
+                GetInstance().WriteMemory(CustomizationCheatsFh4.CleanlinessDetourAddress + 0x37, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+                GetInstance().WriteMemory(CustomizationCheatsFh4.CleanlinessDetourAddress + 0x38, Convert.ToSingle(MainSlider.Value));
+                break;
+            }
+            case 2:
+            {
+                if (CustomizationCheatsFh4.CleanlinessDetourAddress == 0)
+                {
+                    await CustomizationCheatsFh4.CheatCleanliness();
+                }
+        
+                if (CustomizationCheatsFh4.CleanlinessDetourAddress == 0) break;                
+                ViewModel.MudEnabled = toggleSwitch.IsOn;
+                GetInstance().WriteMemory(CustomizationCheatsFh4.CleanlinessDetourAddress + 0x3C, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+                GetInstance().WriteMemory(CustomizationCheatsFh4.CleanlinessDetourAddress + 0x3D, Convert.ToSingle(MainSlider.Value));
+                break;
+            }
+        } 
     }
     
     private async void HeadlightSwitch_OnToggled(object sender, RoutedEventArgs e)
@@ -143,22 +213,43 @@ public partial class Customization
             case 0:
             {
                 ViewModel.GlowingPaintValue = Convert.ToSingle(e.NewValue);
-                if (CustomizationCheatsFh5.PaintDetourAddress == 0) return;
-                GetInstance().WriteMemory(CustomizationCheatsFh5.PaintDetourAddress + 0x37, ViewModel.GlowingPaintValue);
+                if (GameVerPlat.GetInstance().Type == GameVerPlat.GameType.Fh5)
+                {
+                    if (CustomizationCheatsFh5.PaintDetourAddress == 0) return;
+                    GetInstance().WriteMemory(CustomizationCheatsFh5.PaintDetourAddress + 0x37, ViewModel.GlowingPaintValue);
+                }
+                else
+                {
+                    if (CustomizationCheatsFh4.PaintDetourAddress == 0) return;
+                    GetInstance().WriteMemory(CustomizationCheatsFh4.PaintDetourAddress + 0x35, ViewModel.GlowingPaintValue);
+                }
                 break;
             }
             case 1:
             {
                 ViewModel.DirtValue = Convert.ToSingle(e.NewValue);
-                if (CustomizationCheatsFh5.CleanlinessDetourAddress == 0) return;
-                GetInstance().WriteMemory(CustomizationCheatsFh5.CleanlinessDetourAddress + 0x38, ViewModel.DirtValue);
+                var address = GameVerPlat.GetInstance().Type switch
+                {
+                    GameVerPlat.GameType.Fh4 => CustomizationCheatsFh4.CleanlinessDetourAddress,
+                    GameVerPlat.GameType.Fh5 => CustomizationCheatsFh5.CleanlinessDetourAddress,
+                    _ => throw new IndexOutOfRangeException()
+                };
+                
+                if (address == 0) return;
+                GetInstance().WriteMemory(address + 0x38, ViewModel.DirtValue);
                 break;
             }
             case 2:
             {
                 ViewModel.MudValue = Convert.ToSingle(e.NewValue);
-                if (CustomizationCheatsFh5.CleanlinessDetourAddress == 0) return;
-                GetInstance().WriteMemory(CustomizationCheatsFh5.CleanlinessDetourAddress + 0x3D, ViewModel.MudValue);
+                var address = GameVerPlat.GetInstance().Type switch
+                {
+                    GameVerPlat.GameType.Fh4 => CustomizationCheatsFh4.CleanlinessDetourAddress,
+                    GameVerPlat.GameType.Fh5 => CustomizationCheatsFh5.CleanlinessDetourAddress,
+                    _ => throw new IndexOutOfRangeException()
+                };
+                if (address == 0) return;
+                GetInstance().WriteMemory(address + 0x3D, ViewModel.MudValue);
                 break;
             }
             case 3:
