@@ -1,5 +1,5 @@
 ﻿using Forza_Mods_AIO.Resources;
-using Memory.Types;
+using Memory;
 using static Forza_Mods_AIO.Resources.Cheats;
 using static Forza_Mods_AIO.Resources.Memory;
 
@@ -34,15 +34,11 @@ public class Sql : CheatsUtilities, ICheatsBase
     
     private static nuint GetVirtualFunctionPtr(nuint ptr, int index)
     {
-        var pVtableBytes = new byte[8];
-        var procHandle = GetInstance().MProc.Handle;
-        Imps.ReadProcessMemory(procHandle, ptr, pVtableBytes, (nuint)pVtableBytes.Length, nint.Zero);
-
-        var pVtable = (nuint)BitConverter.ToInt64(pVtableBytes, 0);
-        var vTableBytes = new byte[8];
-        var lpBaseAddress = pVtable + (nuint)nuint.Size * (nuint)index;
-        Imps.ReadProcessMemory(procHandle, lpBaseAddress, vTableBytes, (nuint)vTableBytes.Length, nint.Zero);
-        return (nuint)BitConverter.ToInt64(vTableBytes, 0);
+        var mem = GetInstance();
+        var pVTable = mem.ReadMemory<UIntPtr>(ptr);
+        var lpBaseAddress = pVTable + (nuint)nuint.Size * (nuint)index;
+        var result = mem.ReadMemory<UIntPtr>(lpBaseAddress);
+        return result;
     }
     
     public Task Query(string command)

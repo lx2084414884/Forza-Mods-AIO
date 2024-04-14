@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Forza_Mods_AIO.Models;
 using MahApps.Metro.Controls;
-using Memory.Types;
+using Memory;
 using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats;

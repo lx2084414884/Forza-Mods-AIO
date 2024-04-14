@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Forza_Mods_AIO.Models;
-using static Memory.Types.Imps;
+using static Memory.Imps;
 using static System.BitConverter;
 using static Forza_Mods_AIO.Resources.Memory;
 using Timer = System.Timers.Timer;
