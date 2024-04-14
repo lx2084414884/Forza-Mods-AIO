@@ -123,8 +123,11 @@ public class Bypass : CheatsUtilities, ICheatsBase
     public void Reset()
     {
         _scanning = false;
-        _antiCheatTimer.Stop();
-        _antiCheatTimer = null!;
+        if (_antiCheatTimer != null!)
+        {
+            _antiCheatTimer.Stop();
+            _antiCheatTimer = null!;
+        }
         var fields = typeof(Bypass).GetFields().Where(f => f.FieldType == typeof(UIntPtr));
         foreach (var field in fields)
         {
