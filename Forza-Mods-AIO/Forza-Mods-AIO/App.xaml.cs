@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Forza_Mods_AIO.Cheats;
+using Forza_Mods_AIO.Models;
 using Forza_Mods_AIO.Resources;
 using Forza_Mods_AIO.Resources.Keybinds;
 using Forza_Mods_AIO.Services;
@@ -61,12 +62,42 @@ public partial class App
         if (createdNew)
         {
             base.OnStartup(e);
+            SetupExceptionHandling();
         }
         else
         {
             MessageBox.Show("Another instance of the tool is already running.", "Information", MessageBoxButton.OK, MessageBoxImage.Asterisk);
             Current.Shutdown();
         }
+    }
+    
+    // https://stackoverflow.com/a/46804709
+    private void SetupExceptionHandling()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            ReportException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+
+        DispatcherUnhandledException += (_, e) =>
+        {
+            ReportException(e.Exception, "Application.Current.DispatcherUnhandledException");
+            e.Handled = true;
+        };
+
+        TaskScheduler.UnobservedTaskException += (_, e) =>
+        {
+            ReportException(e.Exception, "TaskScheduler.UnobservedTaskException");
+            e.SetObserved();
+        };
+    }
+    
+    private static void ReportException(Exception exception, string source)
+    {
+        MessageBox.Show(
+            $"An unexpected error happened.\nPlease (Press Ctrl+C) to copy, and make an issue on the github repository or post the copied text on the aio mega-thread in our discord server (discord.gg/forzamods)\n\nSource:{source}\n{exception.Message}\n\nTool Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}\nGame: {GameVerPlat.GetInstance().Name}\nGame Version: {GameVerPlat.GetInstance().Update}\nPlatform: {GameVerPlat.GetInstance().Platform}",
+            $"{GetRequiredService<MetroWindow>().Title} - Error",
+            0,
+            MessageBoxImage.Error
+        );
     }
 
     protected override void OnExit(ExitEventArgs e)
