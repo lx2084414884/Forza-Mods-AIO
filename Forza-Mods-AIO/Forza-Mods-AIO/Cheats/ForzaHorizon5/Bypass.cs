@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows;
 using Forza_Mods_AIO.Models;
 using static Memory.Imps;
 using static System.BitConverter;
@@ -47,12 +48,10 @@ public class Bypass : CheatsUtilities, ICheatsBase
             var procHandle = mem.MProc.Process.Handle;
             var memSize = mem.MProc.Process.MainModule!.ModuleMemorySize;
             var baseAddress = (UIntPtr)mem.MProc.Process.MainModule!.BaseAddress;
-        
-            var memCopy = new byte[memSize];
-            ReadProcessMemory(procHandle, baseAddress, memCopy, memSize);
-            
+
+            var memCopy = mem.ReadArrayMemory<byte>(baseAddress, memSize);
             _memCopyAddress = VirtualAllocEx(procHandle, UIntPtr.Zero, (uint)memSize, MemCommit | MemReserve, ReadWrite);
-            WriteProcessMemory(procHandle, _memCopyAddress, memCopy, (uint)memSize, nint.Zero);
+            mem.WriteArrayMemory(_memCopyAddress, memCopy);
 
              var currentProcess = Process.GetCurrentProcess();
             currentProcess.MinWorkingSet = 300000;
@@ -90,16 +89,28 @@ public class Bypass : CheatsUtilities, ICheatsBase
         if (_callAddress > 3)
         {
             _antiCheatTimer = new Timer();
-            _antiCheatTimer.Interval = 30000;
+            _antiCheatTimer.Interval = 25000;
             _antiCheatTimer.Elapsed += async (_, _) =>
             {
                 var mem = GetInstance();
                 mem.WriteArrayMemory(_callAddress, new byte[] { 0xFF, 0x50, 0x30 });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    BypassDebug.DebugInfoReports.Add(new DebugInfoReport($"Replaced with original: {_callAddress:X}"));
+                });
                 await Task.Delay(1000);
                 mem.WriteArrayMemory(_callAddress, new byte[] { 0x90, 0x90, 0x90 });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    BypassDebug.DebugInfoReports.Add(new DebugInfoReport($"Stopped: {_callAddress:X}"));
+                });
             };
         
             GetInstance().WriteArrayMemory(_callAddress, new byte[] { 0x90, 0x90, 0x90 });
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                BypassDebug.DebugInfoReports.Add(new DebugInfoReport($"Stopped: {_callAddress:X}"));
+            });
             _antiCheatTimer.Start();
         }
     }
