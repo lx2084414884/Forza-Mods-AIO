@@ -101,6 +101,11 @@
                                                  Visibility="{Binding ViewModel.IsFh5, 
                                                  Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     
+                    <controls:StatusComboboxItem Content="{DynamicResource SpeedTrapMultiplier}"
+                                                 IsOn="{Binding ViewModel.DangerSignMultiplierEnabled}"
+                                                 Visibility="{Binding ViewModel.IsFh5, 
+                                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    
                 </ComboBox>
                 
                 <mah:NumericUpDown x:Name="MainValueBox" 

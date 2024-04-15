@@ -50,6 +50,9 @@ public partial class MiscViewModel : ObservableObject
     private bool _dangerSignMultiplierEnabled;
     
     [ObservableProperty]
+    private bool _speedTrapMultiplierEnabled;
+    
+    [ObservableProperty]
     private int _spinSellFactorValue = 999;
     
     [ObservableProperty]
@@ -78,4 +81,7 @@ public partial class MiscViewModel : ObservableObject
     
     [ObservableProperty]
     private float _dangerSignMultiplierValue = 5f;
+    
+    [ObservableProperty]
+    private float _speedTrapMultiplierValue = 5f;
 }
