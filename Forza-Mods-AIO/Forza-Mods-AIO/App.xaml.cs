@@ -93,7 +93,7 @@ public partial class App
     private static void ReportException(Exception exception, string source)
     {
         MessageBox.Show(
-            $"An unexpected error happened.\nPlease (Press Ctrl+C) to copy, and make an issue on the github repository or post the copied text on the aio mega-thread in our discord server (discord.gg/forzamods)\n\nSource:{source}\n{exception.Message}\n\nTool Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}\nGame: {GameVerPlat.GetInstance().Name}\nGame Version: {GameVerPlat.GetInstance().Update}\nPlatform: {GameVerPlat.GetInstance().Platform}",
+            $"An unexpected error happened.\nPlease (Press Ctrl+C) to copy, and make an issue on the github repository or post the copied text on the aio mega-thread in our discord server (discord.gg/forzamods)\n\nSource:{source}\nException:{exception.Message}\nException Source:{exception.Source}\n\nTool Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}\nGame: {GameVerPlat.GetInstance().Name}\nGame Version: {GameVerPlat.GetInstance().Update}\nPlatform: {GameVerPlat.GetInstance().Platform}",
             $"{GetRequiredService<MetroWindow>().Title} - Error",
             0,
             MessageBoxImage.Error
