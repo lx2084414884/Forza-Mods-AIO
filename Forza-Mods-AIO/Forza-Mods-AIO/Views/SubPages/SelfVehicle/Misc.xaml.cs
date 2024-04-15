@@ -150,6 +150,12 @@ public partial class Misc
                 MainToggleSwitch.IsOn = ViewModel.DangerSignMultiplierEnabled;
                 break;
             }
+            case 11:
+            {           
+                MainValueBox.Value = ViewModel.SpeedTrapMultiplierValue;
+                MainToggleSwitch.IsOn = ViewModel.SpeedTrapMultiplierEnabled;
+                break;
+            }
         }
 
         MainValueBox.Minimum = comboBox.SelectedIndex switch

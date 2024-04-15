@@ -102,7 +102,7 @@
                                                  Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     
                     <controls:StatusComboboxItem Content="{DynamicResource SpeedTrapMultiplier}"
-                                                 IsOn="{Binding ViewModel.DangerSignMultiplierEnabled}"
+                                                 IsOn="{Binding ViewModel.SpeedTrapMultiplierEnabled}"
                                                  Visibility="{Binding ViewModel.IsFh5, 
                                                  Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     
