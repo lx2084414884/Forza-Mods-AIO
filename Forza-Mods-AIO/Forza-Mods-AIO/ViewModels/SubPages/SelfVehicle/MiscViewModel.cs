@@ -47,6 +47,9 @@ public partial class MiscViewModel : ObservableObject
     private bool _raceTimeScaleEnabled;
     
     [ObservableProperty]
+    private bool _dangerSignMultiplierEnabled;
+    
+    [ObservableProperty]
     private int _spinSellFactorValue = 999;
     
     [ObservableProperty]
@@ -72,4 +75,7 @@ public partial class MiscViewModel : ObservableObject
     
     [ObservableProperty]
     private float _raceTimeScaleValue = 0.5f;
+    
+    [ObservableProperty]
+    private float _dangerSignMultiplierValue = 5f;
 }

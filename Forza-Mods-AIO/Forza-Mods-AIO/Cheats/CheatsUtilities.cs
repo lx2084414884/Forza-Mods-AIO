@@ -18,34 +18,41 @@ public class CheatsUtilities
 
         var scanStartAddr = minRange;
         var address = (UIntPtr)minRange;
-        
-        while (address < (ulong)maxRange)
+
+        try
         {
-            Imps.Native_VirtualQueryEx(handle, address, out Imps.MemoryBasicInformation64 memInfo, info.PageSize);
-            if (address == memInfo.BaseAddress + memInfo.RegionSize)
+            while (address < (ulong)maxRange)
             {
-                break;
-            }
+                Imps.Native_VirtualQueryEx(handle, address, out Imps.MemoryBasicInformation64 memInfo, info.PageSize);
+                if (address == memInfo.BaseAddress + memInfo.RegionSize)
+                {
+                    break;
+                }
 
-            var scanEndAddr = (long)memInfo.BaseAddress + (long)memInfo.RegionSize;
+                var scanEndAddr = (long)memInfo.BaseAddress + (long)memInfo.RegionSize;
 
-            nuint retAddress;
-            if (scanEndAddr - scanStartAddr > 500000000)
-            {
-                retAddress = await ScanRange(search, scanStartAddr, scanEndAddr);
-            }
-            else
-            {
-                retAddress = (await GetInstance().AoBScan(scanStartAddr, scanEndAddr, search)).FirstOrDefault();
-            }
+                nuint retAddress;
+                if (scanEndAddr - scanStartAddr > 500000000)
+                {
+                    retAddress = await ScanRange(search, scanStartAddr, scanEndAddr);
+                }
+                else
+                {
+                    retAddress = (await GetInstance().AoBScan(scanStartAddr, scanEndAddr, search)).FirstOrDefault();
+                }
 
-            if (retAddress != 0)
-            {
-                return retAddress;
-            }
+                if (retAddress != 0)
+                {
+                    return retAddress;
+                }
 
-            scanStartAddr = scanEndAddr;
-            address = memInfo.BaseAddress + checked((UIntPtr)memInfo.RegionSize);
+                scanStartAddr = scanEndAddr;
+                address = memInfo.BaseAddress + checked((UIntPtr)memInfo.RegionSize);
+            }
+        }
+        catch
+        {
+            // ignored
         }
 
         return 0;

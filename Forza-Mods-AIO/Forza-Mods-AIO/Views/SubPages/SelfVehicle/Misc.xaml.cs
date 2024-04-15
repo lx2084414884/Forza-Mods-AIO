@@ -144,11 +144,17 @@ public partial class Misc
                 MainToggleSwitch.IsOn = ViewModel.RaceTimeScaleEnabled;
                 break;
             }
+            case 10:
+            {           
+                MainValueBox.Value = ViewModel.DangerSignMultiplierValue;
+                MainToggleSwitch.IsOn = ViewModel.DangerSignMultiplierEnabled;
+                break;
+            }
         }
 
         MainValueBox.Minimum = comboBox.SelectedIndex switch
         { 
-            0 or 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 => 0,
+            0 or 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 => 0,
             5 => int.MinValue,
             _ => throw new IndexOutOfRangeException()
         };
@@ -156,14 +162,14 @@ public partial class Misc
         MainValueBox.Maximum = comboBox.SelectedIndex switch
         { 
             0 or 1 or 2 or 4 or 5 => int.MaxValue,
-            3 or 8 => 10,
+            3 or 8 or 10 => 10,
             6 or 7 or 9 => 1,
             _ => throw new IndexOutOfRangeException()
         };
 
         MainValueBox.Interval = comboBox.SelectedIndex switch
         { 
-            0 or 1 or 2 or 3 or 4 or 5 or 8 => 1,
+            0 or 1 or 2 or 3 or 4 or 5 or 8 or 10 => 1,
             6 or 7 or 9 => 0.1,
             _ => throw new IndexOutOfRangeException()
         };
@@ -260,6 +266,21 @@ public partial class Misc
                 ViewModel.RaceTimeScaleValue = Convert.ToSingle(e.NewValue);
                 if (MiscCheatsFh5.RaceTimeScaleDetourAddress == 0) return;
                 GetInstance().WriteMemory(MiscCheatsFh5.RaceTimeScaleDetourAddress + 0x35, ViewModel.RaceTimeScaleValue);
+                break;
+            }
+            case 10:
+            {                   
+                ViewModel.DangerSignMultiplierValue = Convert.ToSingle(e.NewValue);
+                if (MiscCheatsFh5.DangerSign1DetourAddress == 0 ||
+                    MiscCheatsFh5.DangerSign2DetourAddress == 0 ||
+                    MiscCheatsFh5.DangerSign3DetourAddress == 0)
+                {
+                    return;
+                }
+        
+                GetInstance().WriteMemory(MiscCheatsFh5.DangerSign1DetourAddress + 0x38, ViewModel.DangerSignMultiplierValue);
+                GetInstance().WriteMemory(MiscCheatsFh5.DangerSign2DetourAddress + 0x35, ViewModel.DangerSignMultiplierValue);
+                GetInstance().WriteMemory(MiscCheatsFh5.DangerSign3DetourAddress + 0x35, ViewModel.DangerSignMultiplierValue);
                 break;
             }
         }
@@ -403,6 +424,11 @@ public partial class Misc
             case 9:
             {
                 await RaceTimeScale(toggleSwitch.IsOn);
+                break;
+            }
+            case 10:
+            {
+                await DangerSignMultiplier(toggleSwitch.IsOn);
                 break;
             }
         }
@@ -686,6 +712,31 @@ public partial class Misc
         if (MiscCheatsFh4.RaceTimeScaleDetourAddress == 0) return;
         GetInstance().WriteMemory(MiscCheatsFh4.RaceTimeScaleDetourAddress + 0x1E, toggled ? (byte)1 : (byte)0);
         GetInstance().WriteMemory(MiscCheatsFh4.RaceTimeScaleDetourAddress + 0x1F, MainValueBox.Value.GetValueOrDefault());
+        ViewModel.RaceTimeScaleEnabled = toggled;
+    }
+    
+    private async Task DangerSignMultiplier(bool toggled)
+    {
+        if (MiscCheatsFh5.DangerSign1DetourAddress == 0 ||
+            MiscCheatsFh5.DangerSign2DetourAddress == 0 ||
+            MiscCheatsFh5.DangerSign3DetourAddress == 0)
+        {
+            await MiscCheatsFh5.CheatDangerSignMultiplier();
+        }
+
+        if (MiscCheatsFh5.DangerSign1DetourAddress == 0 ||
+            MiscCheatsFh5.DangerSign2DetourAddress == 0 ||
+            MiscCheatsFh5.DangerSign3DetourAddress == 0)
+        {
+            return;
+        }
+        
+        GetInstance().WriteMemory(MiscCheatsFh5.DangerSign1DetourAddress + 0x37, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh5.DangerSign1DetourAddress + 0x38, Convert.ToSingle(MainValueBox.Value));
+        GetInstance().WriteMemory(MiscCheatsFh5.DangerSign2DetourAddress + 0x34, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh5.DangerSign2DetourAddress + 0x35, Convert.ToSingle(MainValueBox.Value));
+        GetInstance().WriteMemory(MiscCheatsFh5.DangerSign3DetourAddress + 0x34, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(MiscCheatsFh5.DangerSign3DetourAddress + 0x35, Convert.ToSingle(MainValueBox.Value));
         ViewModel.RaceTimeScaleEnabled = toggled;
     }
 

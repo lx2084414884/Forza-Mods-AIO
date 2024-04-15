@@ -31,6 +31,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
     public UIntPtr UnbreakableSkillScoreDetourAddress;
     private UIntPtr _removeBuildCapAddress;
     public UIntPtr RemoveBuildCapDetourAddress;
+    private UIntPtr _dangerSign1Address;
+    public UIntPtr DangerSign1DetourAddress;
+    private UIntPtr _dangerSign2Address;
+    public UIntPtr DangerSign2DetourAddress;
+    private UIntPtr _dangerSign3Address;
+    public UIntPtr DangerSign3DetourAddress;
 
     public async Task CheatName()
     {
@@ -450,6 +456,94 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         
         ShowError("Remove build cap", sig);
     }
+
+    public async Task CheatDangerSignMultiplier()
+    {
+        _dangerSign1Address = 0;
+        DangerSign1DetourAddress = 0;
+        _dangerSign2Address = 0;
+        DangerSign2DetourAddress = 0;
+        _dangerSign3Address = 0;
+        DangerSign3DetourAddress = 0;
+        
+        const string dangerSign1Sig = "0F 51 ? F3 0F ? ? ? ? ? ? 0F 28 ? 48 8B";
+        _dangerSign1Address = await SmartAobScan(dangerSign1Sig) + 3;
+        if (_dangerSign1Address > 3)
+        {
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+            
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            
+            var asm = new byte[]
+            {
+                0x80, 0x3D, 0x30, 0x00, 0x00, 0x00, 0x01, 0x75, 0x21, 0x48, 0x83, 0xEC, 0x10, 0xF3, 0x0F, 0x7F, 0x0C,
+                0x24, 0xF3, 0x0F, 0x10, 0x0D, 0x1E, 0x00, 0x00, 0x00, 0x0F, 0xC6, 0xC9, 0x00, 0x0F, 0x59, 0xC1, 0xF3,
+                0x0F, 0x6F, 0x0C, 0x24, 0x48, 0x83, 0xC4, 0x10, 0xF3, 0x0F, 0x11, 0x86, 0xB4, 0x03, 0x00, 0x00
+            };
+
+            DangerSign1DetourAddress = GetInstance().CreateDetour(_dangerSign1Address, asm, 8);
+        }
+        else
+        {
+            ShowError("Danger Sign Multiplier", dangerSign1Sig);
+            return;
+        }
+        
+        const string dangerSign2Sig = "0F 29 ? ? ? 49 8B ? 49 8B ? 48 8B ? ? ? ? ? 48 85";
+        _dangerSign2Address = await SmartAobScan(dangerSign2Sig);
+        if (_dangerSign2Address > 0)
+        {
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+            
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            
+            var asm = new byte[]
+            {
+                0x80, 0x3D, 0x2D, 0x00, 0x00, 0x00, 0x01, 0x75, 0x21, 0x48, 0x83, 0xEC, 0x10, 0xF3, 0x0F, 0x7F, 0x0C,
+                0x24, 0xF3, 0x0F, 0x10, 0x0D, 0x1B, 0x00, 0x00, 0x00, 0x0F, 0xC6, 0xC9, 0x00, 0x0F, 0x59, 0xC1, 0xF3,
+                0x0F, 0x6F, 0x0C, 0x24, 0x48, 0x83, 0xC4, 0x10, 0x0F, 0x29, 0x44, 0x24, 0x50
+            };
+
+            DangerSign2DetourAddress = GetInstance().CreateDetour(_dangerSign2Address, asm, 5);
+        }
+        else
+        {
+            ShowError("Danger Sign Multiplier", dangerSign2Sig);
+            return;
+        }
+        
+        
+        const string dangerSign3Sig = "0F 29 ? ? ? 49 8B ? 48 8B ? ? ? ? ? 48 85";
+        _dangerSign3Address = await SmartAobScan(dangerSign3Sig);
+        if (_dangerSign3Address > 0)
+        {
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+            
+            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+
+            var asm = new byte[]
+            {
+                0x80, 0x3D, 0x2D, 0x00, 0x00, 0x00, 0x01, 0x75, 0x21, 0x48, 0x83, 0xEC, 0x10, 0xF3, 0x0F, 0x7F, 0x0C,
+                0x24, 0xF3, 0x0F, 0x10, 0x0D, 0x1B, 0x00, 0x00, 0x00, 0x0F, 0xC6, 0xC9, 0x00, 0x0F, 0x59, 0xC1, 0xF3,
+                0x0F, 0x6F, 0x0C, 0x24, 0x48, 0x83, 0xC4, 0x10, 0x0F, 0x29, 0x44, 0x24, 0x50
+            };
+
+            DangerSign3DetourAddress = GetInstance().CreateDetour(_dangerSign3Address, asm, 5);
+        }
+        else
+        {
+            ShowError("Danger Sign Multiplier", dangerSign3Sig);
+        }
+    }
     
     public void Cleanup()
     {
@@ -526,6 +620,24 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         {
             mem.WriteArrayMemory(_raceTimeScaleAddress, new byte[] { 0xF3, 0x0F, 0x5A, 0xCE, 0xF2, 0x0F, 0x58, 0xC8 });
             Free(RaceTimeScaleDetourAddress);
+        }
+
+        if (DangerSign1DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign1Address, new byte[] { 0xF3, 0x0F, 0x11, 0x86, 0xB4, 0x03, 0x00, 0x00 });
+            Free(DangerSign1DetourAddress);
+        }
+
+        if (DangerSign2DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign2Address, new byte[] { 0x0F, 0x29, 0x44, 0x24, 0x50 });
+            Free(DangerSign2DetourAddress);
+        }
+
+        if (DangerSign3DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign3Address, new byte[] { 0x0F, 0x29, 0x44, 0x24, 0x50 });
+            Free(DangerSign3DetourAddress);
         }
 
         if (_removeBuildCapAddress <= 5) return;
