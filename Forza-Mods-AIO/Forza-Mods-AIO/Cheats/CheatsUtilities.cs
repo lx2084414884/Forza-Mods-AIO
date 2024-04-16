@@ -8,7 +8,7 @@ namespace Forza_Mods_AIO.Cheats;
 
 public class CheatsUtilities
 {
-    protected static async Task<nuint> SmartAobScan(string search)
+    protected static async Task<nuint> SmartAobScan(string search, UIntPtr? start = null, UIntPtr? end = null)
     {
         Imps.GetSystemInfo(out var info);
 
@@ -16,6 +16,16 @@ public class CheatsUtilities
         var minRange = (long)GetInstance().MProc.Process.MainModule!.BaseAddress;
         var maxRange = minRange + GetInstance().MProc.Process.MainModule!.ModuleMemorySize;
 
+        if (start != null)
+        {
+            minRange = (long)start;
+        }
+        
+        if (end != null)
+        {
+            maxRange = (long)end;
+        }
+        
         var scanStartAddr = minRange;
         var address = (UIntPtr)minRange;
 

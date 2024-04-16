@@ -493,9 +493,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
             ShowError("Danger Sign Multiplier", dangerSign1Sig);
             return;
         }
+
+        var newScanStart = _dangerSign1Address - 0x1000;
+        var newScanEnd = _dangerSign1Address + 0x1000;
         
         const string dangerSign2Sig = "0F 29 ? ? ? 49 8B ? 49 8B ? 48 8B ? ? ? ? ? 48 85";
-        _dangerSign2Address = await SmartAobScan(dangerSign2Sig);
+        _dangerSign2Address = await SmartAobScan(dangerSign2Sig, newScanStart, newScanEnd);
         if (_dangerSign2Address > 0)
         {
             if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
@@ -522,7 +525,7 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         
         
         const string dangerSign3Sig = "0F 29 ? ? ? 49 8B ? 48 8B ? ? ? ? ? 48 85";
-        _dangerSign3Address = await SmartAobScan(dangerSign3Sig);
+        _dangerSign3Address = await SmartAobScan(dangerSign3Sig, newScanStart, newScanEnd);
         if (_dangerSign3Address > 0)
         {
             if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
