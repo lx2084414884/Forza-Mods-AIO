@@ -46,8 +46,8 @@ public class CameraCheats : CheatsUtilities, ICheatsBase
         ChaseFarAddress = chaseEnumerable.LastOrDefault() - 10;
         ++successCount;
 
-        var newScanStart = (long)(ChaseAddress - 0x3000);
-        var newScanEnd = (long)(ChaseAddress + 0x3000);
+        var newScanStart = (long)(ChaseAddress - 0x1000);
+        var newScanEnd = (long)(ChaseAddress + 0x1000);
         
         const string driverHoodSig = "CD CC 4C 3E 00 50 43 47 00 00 34 42 00 00 20";
         var driverHoodList = await GetInstance().AoBScan(newScanStart, newScanEnd, driverHoodSig, true);

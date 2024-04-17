@@ -18,7 +18,7 @@ public class CustomizationCheats : CheatsUtilities, ICheatsBase
         _paintAddress = 0;
         PaintDetourAddress = 0;
 
-        const string sig = "0F 11 0A C6 42 F0 01";
+        const string sig = "0F 11 ? C6 ? ? ? 49";
         _paintAddress = await SmartAobScan(sig);
         
         if (_paintAddress > 0)
