@@ -10,7 +10,7 @@ These additions are designed to streamline gameplay, improve user satisfaction, 
 ## Why is this project useful?
 
 The AIO significantly enhances your gaming experience in FH4 and 5. It provides time-saving and quality-of-life features, ensuring you have more fun while playing.
-Plus, it's completely free, making these enhancements accessible to everyone.
+Plus, it's completely free, making these enhancements accessible to everyone. However if you wish to support the developers, we are open to donations which you can find in the repository and in the tool itself.
 
 ## How It Works?
 
