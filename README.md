@@ -1,37 +1,52 @@
 # Forza Mods AIO
 
-Source repository for [the AIO](https://github.com/ForzaMods/AIO).
+Forza Mods AIO is a free FH4 and FH5 mod tool that aims to bring cool, new and unique features, all at NO cost!
 
-## Introduction
+## What does this project do?
 
-Forza Mods AIO is a free Forza Horizon 4 and Forza Horzion 5 mod tool that aims to bring cool, new and unique features, all at NO cost!
+It improves the player experience by adding various time saving and quality of life features.<br/>
+These additions are designed to streamline gameplay, improve user satisfaction, and elevate the overall enjoyment of the gaming experience.
 
-## Features
+## Why is this project useful?
 
-If you want to get a list of all features, planned features and requested features, just look at [our Trello](https://trello.com/b/jXY01dbN/forza-mods-aio)
+The AIO significantly enhances your gaming experience in FH4 and 5. It provides time-saving and quality-of-life features, ensuring you have more fun while playing.
+Plus, it's completely free, making these enhancements accessible to everyone.
+
+## How It Works?
+
+This tool uses [merik's](https://github.com/szaaamerik) [memory.dll library](https://github.com/szaaamerik/memory.andy.dll) to perform signature scans for different functions and offsets.<br/>
+The result from the scans is then used to create detours to power the features within the tool.
+
+## How do I get started?
+
+To get started with the AIO you have two ways.<br/>
+You either download the latest release or build the project yourself.
+
+### Downloading the latest release:
+
+- Head over to the [releases tab](https://github.com/ForzaMods/Forza-Mods-AIO/releases),
+- Find the release which has the "latest" tag and open it,
+- Scroll down to the assets part, and download the executable.
+
+### Building the project yourself:
+
+- Clone the repository,
+- Open it in your preferred dotnet IDE (the developers recommend [JetBrains Rider](https://www.jetbrains.com/rider/),
+- Ensure all necessary dependencies are installed,
+- Press the start/run button to start the project.
+
+## Where can I get more help, if I need it?
+
+For support, please visit our Discord server or open an issue on GitHub.
+
+Discord: [Discord Server Link](https://discord.gg/forzamods)<br/>
+GitHub Issues: [Github Issues Link](https://github.com/ForzaMods/Forza-Mods-AIO/issues/new/choose)
+
+## Requirements
+
+- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.4-windows-x64-installer)
+- Latest version of the game you wish to use the AIO on.
 
 ## License
 
-This app is under the GPL-3.0 license. You can find a copy of it [here](LICENSE). 
-
-## Credits
-
-This project is made possible by the hard work and dedication of the following individuals:
-
-Ethan - Self/Vehicle, SQL, Overlay, Other backend stuff.
-
-Merik - Self/Vehicle, Overlay, Tuning, AC bypass, Backend.
-
-Mark - Backend help.
-
-Anonymous - AC bypass.
-
-Draff (quit) - Github management and previous work on V1: Autoshow, AC bypass, Backend. No involvement in V2
-
-And all of the people that contributed to the project :)
-
-## Disclaimer
-
-Use this mod menu at your own risk. We arent responsible for any of ur bans. Be aware that modding is against [Forza's Code Of Conduct](https://support.forzamotorsport.net/hc/en-us/articles/360035563914).
-
-Note: We (all of the official developers) do NOT plan on adding any new features to FH4, the game is at its EOL phase (the developers left that game to rot)
+This app is under the GPL-3.0 license. You can find a copy of it [here](LICENSE).
