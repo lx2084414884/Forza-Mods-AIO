@@ -31,7 +31,7 @@ You either download the latest release or build the project yourself.
 ### Building the project yourself:
 
 - Clone the repository,
-- Open it in your preferred dotnet IDE (the developers recommend [JetBrains Rider](https://www.jetbrains.com/rider/),
+- Open it in your preferred dotnet IDE (the developers recommend [JetBrains Rider](https://www.jetbrains.com/rider/)),
 - Ensure all necessary dependencies are installed,
 - Press the start/run button to start the project.
 
