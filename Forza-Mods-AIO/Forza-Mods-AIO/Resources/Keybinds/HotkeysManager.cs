@@ -2,14 +2,13 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
-using Forza_Mods_AIO.Models;
 
 namespace Forza_Mods_AIO.Resources.Keybinds;
 
 // https://github.com/AngryCarrot789/KeyDownTester/blob/master/KeyDownTester/Keys/HotkeysManager.cs
 public static partial class HotkeysManager
 {
-    private const int WhKeyboardLl = 13;
+    private static List<GlobalHotkey> Hotkeys { get; }
     private static readonly LowLevelKeyboardProc LowLevelProc = HookCallback;
     private static IntPtr _hookId = IntPtr.Zero;
     
@@ -18,15 +17,16 @@ public static partial class HotkeysManager
         Hotkeys = new List<GlobalHotkey>();
     }
 
-    private static List<GlobalHotkey> Hotkeys { get; }
-
     public static void SetupSystemHook()
     {
         _hookId = SetHook(LowLevelProc);
+        if (_hookId > 0) return;
+        MessageBox.Show("Couldn't setup the keybinding hook.","Information", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 
     public static void ShutdownSystemHook()
     {
+        if (_hookId <= 0) return;
         UnhookWindowsHookEx(_hookId);
     }
 
@@ -37,34 +37,35 @@ public static partial class HotkeysManager
 
     public static void RemoveHotkey(GlobalHotkey hotkey)
     {
-        try
-        {
-            foreach (var globalHotkey in Hotkeys.Where(globalHotkey => hotkey.Modifier == globalHotkey.Modifier && hotkey.Key == globalHotkey.Key))
-            {
-                Hotkeys.Remove(globalHotkey);
-            }
-        }
-        catch
-        {
-            // ignored
-        }
+        Hotkeys.Remove(hotkey);
     }
 
-    private static void CheckHotkeys()
+    public static bool CheckIfTheSameHotkeyExists(Key key, ModifierKeys modifierKeys)
     {
-        Task.Run(async () =>
+        return Hotkeys.Any(globalHotkey => globalHotkey.Key == key && globalHotkey.Modifier == modifierKeys);
+    }
+
+    private static async void CheckHotkeys()
+    {
+        await Application.Current.Dispatcher.InvokeAsync(async () =>
         {
-            await Application.Current.Dispatcher.InvokeAsync(() =>
+            foreach (var hotkey in Hotkeys
+                         .Where(hotkey => Keyboard.Modifiers == hotkey.Modifier && hotkey.Key != Key.None)
+                         .Where(hotkey => hotkey.CanExecute))
             {
-                foreach (var hotkey in Hotkeys
-                             .Where(hotkey =>
-                                 Keyboard.Modifiers == hotkey.Modifier && hotkey.Key != Key.None &&
-                                 Keyboard.IsKeyDown(hotkey.Key))
-                             .Where(hotkey => hotkey.CanExecute))
+                if (hotkey.IsPressed)
+                {
+                    continue;
+                }
+
+                hotkey.IsPressed = true;
+                while (Keyboard.IsKeyDown(hotkey.Key))
                 {
                     hotkey.Callback();
+                    await Task.Delay(hotkey.Interval);
                 }
-            });
+                hotkey.IsPressed = false;
+            }
         });
     }
 
@@ -72,12 +73,15 @@ public static partial class HotkeysManager
     {
         using var curProcess = Process.GetCurrentProcess();
         using var curModule = curProcess.MainModule;
-        return curModule == null ? 0 : SetWindowsHookEx(WhKeyboardLl, proc, Imports.GetModuleHandle(curModule.ModuleName), 0);
+        return curModule == null ? 0 : SetWindowsHookEx(13, proc, Imports.GetModuleHandle(curModule.ModuleName), 0);
     }
 
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        if (nCode >= 0) CheckHotkeys();
+        if (nCode >= 0)
+        {
+            Task.Run(CheckHotkeys);
+        }
         return CallNextHookEx(_hookId, nCode, wParam, lParam);
     }
 

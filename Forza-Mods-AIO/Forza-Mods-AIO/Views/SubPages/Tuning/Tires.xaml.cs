@@ -15,7 +15,7 @@ public partial class Tires
     private static TuningCheats TuningCheatsFh5 => Forza_Mods_AIO.Resources.Cheats.GetClass<TuningCheats>();
     private static CarCheats CarCheatsFh5 => Forza_Mods_AIO.Resources.Cheats.GetClass<CarCheats>();
     private static UIntPtr Ptr => GetInstance()
-        .ReadMemory<UIntPtr>(CarCheatsFh5.LocalPlayerHookDetourAddress + CarCheats.LocalPlayerOffset);
+        .ReadMemory<UIntPtr>(CarCheatsFh5.LocalPlayerHookDetourAddress + CarCheatsOffsets.LocalPlayer);
 
     private bool _codeChange;
 

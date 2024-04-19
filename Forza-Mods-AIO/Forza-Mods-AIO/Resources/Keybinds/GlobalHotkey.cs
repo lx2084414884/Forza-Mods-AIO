@@ -3,34 +3,12 @@
 namespace Forza_Mods_AIO.Resources.Keybinds;
 
 // https://github.com/AngryCarrot789/KeyDownTester/blob/master/KeyDownTester/Keys/GlobalHotkey.cs
-public class GlobalHotkey
+public class GlobalHotkey(ModifierKeys modifier, Key key, Action callbackMethod, int interval = 250, bool canExecute = false)
 {
-    private Key _key;
-    public Key Key { get => _key; set => SetField(ref _key, value); }
-    
-    private readonly Action _callback = null!;
-    public Action Callback { get => _callback; private init => SetField(ref _callback, value); }
-
-    private ModifierKeys _modifier;
-    public ModifierKeys Modifier { get => _modifier; set => SetField(ref _modifier, value); }
-
-    private bool _canExecute;
-    public bool CanExecute { get => _canExecute; set => SetField(ref _canExecute, value); }
-    
-    public GlobalHotkey(Key key, Action callback, ModifierKeys modifier = ModifierKeys.None, bool canExecute = true)
-    {
-        Key = key;
-        Callback = callback;
-        Modifier = modifier;
-        CanExecute = canExecute;
-        HotkeysManager.AddHotkey(this);
-    }
-
-    private void SetField<T>(ref T field, T value)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        HotkeysManager.RemoveHotkey(this);
-        HotkeysManager.AddHotkey(this);
-    }
+    public ModifierKeys Modifier { get; set; } = modifier;
+    public Key Key { get; set; } = key;
+    public Action Callback { get; } = callbackMethod;
+    public bool CanExecute { get; set; } = canExecute;
+    public bool IsPressed { get; set; }
+    public int Interval { get; set; } = interval;
 }

@@ -29,7 +29,7 @@
                                    TextAlignment="Left"
                                    Value="3"
                                    Minimum="1"
-                                   Maximum="5"
+                                   Maximum="10"
                                    ValueChanged="VelocityStrength_OnValueChanged"
                                    mah:ControlsHelper.CornerRadius="{StaticResource ControlCornerRadius}"
                                    IsEnabled="{Binding ViewModel.AreUiElementsEnabled, Mode=OneWay}"
@@ -64,7 +64,14 @@
                                   FontSize="12"
                                   Content="{DynamicResource Velocity}"
                                   IsEnabled="{Binding ViewModel.AreUiElementsEnabled, Mode=OneWay}"
-                                  Toggled="VelocitySwitch_OnToggled"/>
+                                  Toggled="VelocitySwitch_OnToggled">
+                    <mah:ToggleSwitch.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Set Hotkey"
+                                      Click="VelocityMenuItem_OnClick"/>
+                        </ContextMenu>
+                    </mah:ToggleSwitch.ContextMenu>  
+                </mah:ToggleSwitch>
                 
             </Grid>
         </Border>
@@ -73,6 +80,8 @@
             <Grid Margin="5 0">
                 
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -118,13 +127,37 @@
                        Content="{DynamicResource Strength}"
                        Margin="5 0"/>
                 
-                <mah:ToggleSwitch Grid.Column="4"
+                <mah:NumericUpDown x:Name="WheelspeedLimit" 
+                                   Grid.Column="4"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Left"
+                                   Value="300"
+                                   Minimum="0"
+                                   ValueChanged="WheelspeedLimit_OnValueChanged"
+                                   mah:ControlsHelper.CornerRadius="{StaticResource ControlCornerRadius}"
+                                   IsEnabled="{Binding ViewModel.AreUiElementsEnabled, Mode=OneWay}"
+                                   Background="{DynamicResource MahApps.Brushes.AccentBase}"
+                                   BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}"/>
+                
+                <Label Grid.Column="5"
+                       VerticalAlignment="Center"
+                       Margin="5"
+                       Content="{DynamicResource Limit}"/>
+                
+                <mah:ToggleSwitch Grid.Column="6"
                                   VerticalAlignment="Center"
                                   MinWidth="0"
                                   FontSize="12"
                                   Content="{DynamicResource Wheelspeed}"
                                   IsEnabled="{Binding ViewModel.AreUiElementsEnabled, Mode=OneWay}"
-                                  Toggled="WheelspeedSwitch_OnToggled"/>
+                                  Toggled="WheelspeedSwitch_OnToggled">
+                    <mah:ToggleSwitch.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Set Hotkey"
+                                      Click="WheelspeedMenuItem_OnClick"/>
+                        </ContextMenu>
+                    </mah:ToggleSwitch.ContextMenu>  
+                </mah:ToggleSwitch>
 
             </Grid>
         </Border>
@@ -219,7 +252,7 @@
                   <mah:ToggleSwitch.ContextMenu>
                       <ContextMenu>
                           <MenuItem Header="Set Hotkey"
-                                    Click="MenuItem_OnClick"/>
+                                    Click="JumpHackMenuItem_OnClick"/>
                       </ContextMenu>
                   </mah:ToggleSwitch.ContextMenu>  
                 </mah:ToggleSwitch>
@@ -301,7 +334,14 @@
                                   FontSize="12"
                                   Content="{DynamicResource SuperBrake}"
                                   IsEnabled="{Binding ViewModel.AreUiElementsEnabled, Mode=OneWay}"
-                                  Toggled="StopSwitch_OnToggled"/>
+                                  Toggled="StopSwitch_OnToggled">
+                    <mah:ToggleSwitch.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Set Hotkey"
+                                      Click="BrakeHackMenuItem_OnClick"/>
+                        </ContextMenu>
+                    </mah:ToggleSwitch.ContextMenu>  
+                </mah:ToggleSwitch>
                 
             </Grid>
         </Border>
@@ -338,7 +378,14 @@
                                   FontSize="12"
                                   Content="{DynamicResource StopAllWheels}"
                                   IsEnabled="{Binding ViewModel.AreUiElementsEnabled, Mode=OneWay}"
-                                  Toggled="StopAllSwitch_OnToggled"/>
+                                  Toggled="StopAllSwitch_OnToggled">
+                    <mah:ToggleSwitch.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Set Hotkey"
+                                      Click="StopAllWheelsMenuItem_OnClick"/>
+                        </ContextMenu>
+                    </mah:ToggleSwitch.ContextMenu>  
+                </mah:ToggleSwitch>
                 
             </StackPanel>
         </Border>

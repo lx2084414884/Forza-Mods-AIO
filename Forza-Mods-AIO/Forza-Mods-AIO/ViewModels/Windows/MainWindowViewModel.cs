@@ -334,7 +334,7 @@ public partial class MainWindowViewModel : ObservableObject
         SearchVisibility = Visibility.Collapsed;
     }
     
-    public async Task<HotKey> GetHotkey(GlobalHotkey hotkey)
+    public async Task GetHotkey(GlobalHotkey hotkey)
     {
         HotKey = new HotKey(hotkey.Key, hotkey.Modifier);   
         
@@ -366,11 +366,24 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (returnWithNoChange)
         {
-            return new HotKey(hotkey.Key, hotkey.Modifier);  
+            return;  
         }
-        
-        if (HotKey == null) return new HotKey(Key.None);
-        var result = new HotKey(HotKey.Key, HotKey.ModifierKeys); 
-        return result;
+
+        if (HotKey == null)
+        {
+            hotkey.Key = Key.None;
+            hotkey.Modifier = ModifierKeys.None;
+            return;
+        }
+
+        if (HotkeysManager.CheckIfTheSameHotkeyExists(HotKey.Key, HotKey.ModifierKeys))
+        {
+            MessageBox.Show("This hotkey is already registered!", "Information", 0, MessageBoxImage.Information);
+        }
+        else
+        {
+            hotkey.Key = HotKey.Key;
+            hotkey.Modifier = HotKey.ModifierKeys;
+        }
     }
 }
