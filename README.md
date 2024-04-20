@@ -40,7 +40,8 @@ You either download the latest release or build the project yourself.
 For support, please visit our Discord server or open an issue on GitHub.
 
 Discord: [Discord Server Link](https://discord.gg/forzamods)<br/>
-GitHub Issues: [Github Issues Link](https://github.com/ForzaMods/Forza-Mods-AIO/issues/new/choose)
+GitHub Issues: [Github Issues Link](https://github.com/ForzaMods/Forza-Mods-AIO/issues/new/choose)<br/>
+Troubleshooting Site: [Troubleshooting Site Link](https://forzamods.dev/troubleshooting)
 
 ## Requirements
 
