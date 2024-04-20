@@ -234,6 +234,7 @@ public partial class Handling
         if (CarCheatsFh5.LocalPlayerHookDetourAddress <= UIntPtr.Zero) return;
         GetInstance().WriteMemory(CarCheatsFh5.LocalPlayerHookDetourAddress + CarCheatsOffsets.WheelspeedMode, (byte)WheelspeedModeBox.SelectedIndex);  
         GetInstance().WriteMemory(CarCheatsFh5.LocalPlayerHookDetourAddress + CarCheatsOffsets.WheelspeedBoost, Convert.ToSingle(WheelspeedValueBox.Value));
+        GetInstance().WriteMemory(CarCheatsFh5.LocalPlayerHookDetourAddress + CarCheatsOffsets.WheelspeedLimit, Convert.ToSingle(WheelspeedLimit.Value));  
         _wheelspeedHotkey.CanExecute = toggleSwitch.IsOn;
     }
 
