@@ -11,8 +11,8 @@
         <Product>3e9b38ef-ff4a-40cc-8fcb-17e5f57be01b</Product>
         <AssemblyTitle>c4b6aec6-f89e-4586-948a-4da13e37426c</AssemblyTitle>
         <IsPackable>false</IsPackable>
-        <AssemblyVersion>2.1.0.0</AssemblyVersion>
-        <FileVersion>2.1.0.0</FileVersion>
+        <AssemblyVersion>2.2.0.0</AssemblyVersion>
+        <FileVersion>2.2.0.0</FileVersion>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>AIO.snk</AssemblyOriginatorKeyFile>
         <PublicSign>true</PublicSign>
