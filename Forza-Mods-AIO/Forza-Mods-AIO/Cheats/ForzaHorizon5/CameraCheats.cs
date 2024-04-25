@@ -1,8 +1,9 @@
-﻿using static Forza_Mods_AIO.Resources.Memory;
+﻿using static Forza_Mods_AIO.Resources.Cheats;
+using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
-public class CameraCheats : CheatsUtilities, ICheatsBase
+public class CameraCheats : CheatsUtilities, ICheatsBase, IRevertBase
 {
     private UIntPtr _cameraAddress;
     public UIntPtr CameraDetourAddress;
@@ -88,12 +89,12 @@ public class CameraCheats : CheatsUtilities, ICheatsBase
 
         if (_cameraAddress > 0)
         {
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
-                await Resources.Cheats.GetClass<Bypass>().DisableCrcChecks();
+                await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -129,6 +130,26 @@ public class CameraCheats : CheatsUtilities, ICheatsBase
         foreach (var field in fields)
         {
             field.SetValue(this, UIntPtr.Zero);
+        }
+    }
+
+    public void Revert()
+    {
+        var mem = GetInstance();
+        
+        if (_cameraAddress > 0)
+        {
+            mem.WriteArrayMemory(_cameraAddress, new byte[] { 0x0F, 0x10, 0x01, 0xB0, 0x01 });
+        }
+    }
+
+    public void Continue()
+    {
+        var mem = GetInstance();
+        
+        if (_cameraAddress > 0)
+        {
+            mem.WriteArrayMemory(_cameraAddress, CalculateDetour(_cameraAddress, CameraDetourAddress, 5));
         }
     }
 }

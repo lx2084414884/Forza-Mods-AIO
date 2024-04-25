@@ -3,7 +3,7 @@ using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
-public class PhotomodeCheats : CheatsUtilities, ICheatsBase
+public class PhotomodeCheats : CheatsUtilities, ICheatsBase, IRevertBase
 {
     private UIntPtr _noClipAddress;
     public UIntPtr NoClipDetourAddress;
@@ -26,12 +26,12 @@ public class PhotomodeCheats : CheatsUtilities, ICheatsBase
         if (_noClipAddress > 0)
         {
             _noClipAddress -= 93;
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -55,12 +55,12 @@ public class PhotomodeCheats : CheatsUtilities, ICheatsBase
 
         if (_noHeightLimitAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -84,12 +84,12 @@ public class PhotomodeCheats : CheatsUtilities, ICheatsBase
 
         if (_increasedZoomAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -167,5 +167,41 @@ public class PhotomodeCheats : CheatsUtilities, ICheatsBase
         {
             field.SetValue(this, UIntPtr.Zero);
         }
+    }
+
+    public void Revert()
+    {
+        var mem = GetInstance();
+
+        if (_noClipAddress > 0)
+        {
+            mem.WriteArrayMemory(_noClipAddress, new byte[] { 0x0F, 0x11, 0x44, 0x24, 0x54 });
+        }
+
+        if (_noHeightLimitAddress > 0)
+        {
+            mem.WriteArrayMemory(_noHeightLimitAddress, new byte[] { 0xF2, 0x0F, 0x10, 0x9E, 0xC0, 0x05, 0x00, 0x00 });
+        }
+        
+        if (_increasedZoomAddress <= 0) return;
+        mem.WriteArrayMemory(_increasedZoomAddress, new byte[] { 0xFF, 0x90, 0x78, 0x03, 0x00, 0x00 });
+    }
+
+    public void Continue()
+    {
+        var mem = GetInstance();
+
+        if (_noClipAddress > 0)
+        {
+            mem.WriteArrayMemory(_noClipAddress, CalculateDetour(_noClipAddress, NoClipDetourAddress, 5));
+        }
+
+        if (_noHeightLimitAddress > 0)
+        {
+            mem.WriteArrayMemory(_noHeightLimitAddress, CalculateDetour(_noHeightLimitAddress, NoClipDetourAddress, 8));
+        }
+        
+        if (_increasedZoomAddress <= 0) return;
+        mem.WriteArrayMemory(_increasedZoomAddress, CalculateDetour(_increasedZoomAddress, IncreasedZoomDetourAddress, 6));
     }
 }

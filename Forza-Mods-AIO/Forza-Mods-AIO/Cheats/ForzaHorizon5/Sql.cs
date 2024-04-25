@@ -1,6 +1,5 @@
 ﻿using Forza_Mods_AIO.Resources;
 using Memory;
-using static Forza_Mods_AIO.Resources.Cheats;
 using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
@@ -15,16 +14,6 @@ public class Sql : CheatsUtilities, ICheatsBase
         WereScansSuccessful = false;
         _cDatabaseAddress = 0;
         _ptr = 0;
-        
-        if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
-        {
-            await GetClass<Bypass>().DisableCrcChecks();
-        }
-
-        if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
-        {
-            return;
-        }
 
         const string sig = "0F 84 ? ? ? ? 48 8B 35 ? ? ? ? 48 85 F6 74";
         _cDatabaseAddress = await SmartAobScan(sig);
@@ -51,7 +40,7 @@ public class Sql : CheatsUtilities, ICheatsBase
         return result;
     }
     
-    public Task Query(string command)
+    public async Task Query(string command)
     {
         var memory = GetInstance();
         var procHandle = memory.MProc.Handle;
@@ -59,6 +48,11 @@ public class Sql : CheatsUtilities, ICheatsBase
         var rcx = _ptr;
         const int virtualFunctionIndex = 9;
         var callFunction = GetVirtualFunctionPtr(_ptr, virtualFunctionIndex);
+        if (callFunction <= 0)
+        {
+            return;
+        }
+        
         var shellCodeAddress = Imps.VirtualAllocEx(procHandle, 0, 0x1000, 0x3000, 0x40);
         var rdx = Imps.VirtualAllocEx(procHandle, 0, 0x1000, 0x3000, 0x40);
         var r8 = Imps.VirtualAllocEx(procHandle, 0, 0x1000, 0x3000, 0x40);
@@ -78,13 +72,13 @@ public class Sql : CheatsUtilities, ICheatsBase
         memory.WriteArrayMemory(shellCodeAddress, shellCode);
         memory.WriteArrayMemory(callFunction + 41, new byte[] { 0xE9, 0xB6, 0x00, 0x00, 0x00, 0x90 });
         var thread = Imports.CreateRemoteThread(procHandle, 0, 0, shellCodeAddress, rcx, 0, out _);
+        await Task.Delay(5);
+        memory.WriteArrayMemory(callFunction + 41, new byte[] { 0x0F, 0x85, 0xB5, 0x00, 0x00, 0x00 });
         _ = Imports.WaitForSingleObject(thread, int.MaxValue);
         Imports.CloseHandle(thread);
-        memory.WriteArrayMemory(callFunction + 41, new byte[] { 0x0F, 0x85, 0xB5, 0x00, 0x00, 0x00 });
         Free(shellCodeAddress);
         Free(r8);
         Free(rdx);
-        return Task.CompletedTask;
     }
 
     public void Cleanup()

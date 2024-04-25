@@ -88,4 +88,18 @@ public class CheatsUtilities
         var handle = GetInstance().MProc.Handle;
         Imps.VirtualFreeEx(handle, address,0, Imps.MemRelease);
     }
+    
+    protected static byte[] CalculateDetour(nuint address, nuint target, int replaceCount)
+    {
+        var detourBytes = new byte[replaceCount];
+        detourBytes[0] = 0xE9;
+        BitConverter.GetBytes((int)((long)target - (long)address - 5)).CopyTo(detourBytes, 1);
+        
+        for (var i = 5; i < detourBytes.Length; i++)
+        {
+            detourBytes[i] = 0x90;
+        }
+
+        return detourBytes;
+    }
 }

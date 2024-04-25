@@ -3,7 +3,7 @@ using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
-public class MiscCheats : CheatsUtilities, ICheatsBase
+public class MiscCheats : CheatsUtilities, ICheatsBase, IRevertBase
 {
     private UIntPtr _nameAddress;
     public UIntPtr NameDetourAddress;
@@ -52,12 +52,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         {
             _nameAddress -= 61;
 
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
 
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var namePtr = await CheatNamePtr();
             if (namePtr == 0) return;
@@ -109,12 +109,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_prizeScaleAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
                 
             var asm = new byte[]
             {
@@ -139,12 +139,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_sellFactorAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -169,12 +169,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_skillScoreMultiplierAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -199,12 +199,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_driftScoreMultiplierAddress > 5)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -229,12 +229,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_skillTreeWideEditAddress > 32)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -259,12 +259,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_skillTreePerksCostAddress > 29)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -289,12 +289,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_missionTimeScaleAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -319,12 +319,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_speedZoneMultiplierAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -349,12 +349,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_trailblazerTimeScaleAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -379,12 +379,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_unbreakableSkillScoreAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -409,12 +409,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_raceTimeScaleAddress > 29)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
 
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -440,12 +440,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
 
         if (_removeBuildCapAddress > 5)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -472,12 +472,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         _dangerSign1Address = await SmartAobScan(dangerSign1Sig) + 3;
         if (_dangerSign1Address > 3)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -501,12 +501,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         _dangerSign2Address = await SmartAobScan(dangerSign2Sig, newScanStart, newScanEnd);
         if (_dangerSign2Address > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -528,12 +528,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         _dangerSign3Address = await SmartAobScan(dangerSign3Sig, newScanStart, newScanEnd);
         if (_dangerSign3Address > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -559,12 +559,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         _speedTrapMultiplierAddress = await SmartAobScan(sig);
         if (_speedTrapMultiplierAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -693,5 +693,182 @@ public class MiscCheats : CheatsUtilities, ICheatsBase
         {
             field.SetValue(this, UIntPtr.Zero);
         }
+    }
+
+    public void Revert()
+    {
+        var mem = GetInstance();
+        
+        if (_nameAddress > 0)
+        {
+            mem.WriteArrayMemory(_nameAddress, new byte[] { 0x48, 0x8B, 0xD0, 0x48, 0x8D, 0x4D, 0x17 });
+        }
+
+        if (_prizeScaleAddress > 0)
+        {
+            mem.WriteArrayMemory(_prizeScaleAddress, new byte[] { 0xF3, 0x0F, 0x10, 0x73, 0x10 });
+        }
+
+        if (_sellFactorAddress > 0)
+        {
+            mem.WriteArrayMemory(_sellFactorAddress, new byte[] { 0x44, 0x8B, 0xB3, 0x80, 0x00, 0x00, 0x00 });
+        }
+
+        if (_skillScoreMultiplierAddress > 0)
+        {
+            mem.WriteArrayMemory(_skillScoreMultiplierAddress, new byte[] { 0x8B, 0x78, 0x08, 0x48, 0x8B, 0x4D, 0x60 });
+        }
+
+        if (_driftScoreMultiplierAddress > 5)
+        {
+            mem.WriteArrayMemory(_driftScoreMultiplierAddress, new byte[] { 0xF3, 0x0F, 0x58, 0xF7, 0x0F, 0x28, 0x7C, 0x24, 0x20 });
+        }
+
+        if (_skillTreeWideEditAddress > 32)
+        {
+            mem.WriteArrayMemory(_skillTreeWideEditAddress, new byte[] { 0xF3, 0x0F, 0x10, 0x73, 0x48 });
+        }
+
+        if (_skillTreePerksCostAddress > 32)
+        {
+            // ReSharper disable once UseUtf8StringLiteral
+            mem.WriteArrayMemory(_skillTreePerksCostAddress, new byte[] { 0x33, 0xD2, 0x8B, 0x5F, 0x28 });
+        }
+
+        if (_missionTimeScaleAddress > 0)
+        {
+            mem.WriteArrayMemory(_missionTimeScaleAddress, new byte[] { 0xF3, 0x0F, 0x5C, 0xC7, 0xF3, 0x0F, 0x11, 0x87, 0x0C, 0x04, 0x00, 0x00 });
+        }
+
+        if (_trailblazerTimeScaleAddress > 0)
+        {
+            mem.WriteArrayMemory(_trailblazerTimeScaleAddress, new byte[] { 0xF3, 0x0F, 0x58, 0xF8, 0xF3, 0x0F, 0x11, 0xBF, 0xAC, 0x03, 0x00, 0x00 });
+        }
+
+        if (_speedZoneMultiplierAddress > 0)
+        {
+            mem.WriteArrayMemory(_speedZoneMultiplierAddress, new byte[] { 0xF3, 0x41, 0x0F, 0x5E, 0xB7, 0xE8, 0x00, 0x00, 0x00 });
+        }
+
+        if (_unbreakableSkillScoreAddress > 0)
+        {
+            mem.WriteArrayMemory(_unbreakableSkillScoreAddress, new byte[] { 0x0F, 0xB6, 0xF0, 0x40, 0x38, 0xAF, 0x74, 0x02, 0x00, 0x00 });
+        }
+
+        if (_raceTimeScaleAddress > 29)
+        {
+            mem.WriteArrayMemory(_raceTimeScaleAddress, new byte[] { 0xF3, 0x0F, 0x5A, 0xCE, 0xF2, 0x0F, 0x58, 0xC8 });
+        }
+
+        if (DangerSign1DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign1Address, new byte[] { 0xF3, 0x0F, 0x11, 0x86, 0xB4, 0x03, 0x00, 0x00 });
+        }
+
+        if (DangerSign2DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign2Address, new byte[] { 0x0F, 0x29, 0x44, 0x24, 0x50 });
+        }
+
+        if (DangerSign3DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign3Address, new byte[] { 0x0F, 0x29, 0x44, 0x24, 0x50 });
+        }
+
+        if (SpeedTrapMultiplierDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_speedTrapMultiplierAddress, new byte[] { 0x0F, 0x29, 0x44, 0x24, 0x30 });
+        }
+
+        if (_removeBuildCapAddress <= 5) return;
+        mem.WriteArrayMemory(_removeBuildCapAddress, new byte[] { 0xF3, 0x0F, 0x11, 0x43, 0x44 });
+    }
+
+    public void Continue()
+    {
+        var mem = GetInstance();
+        
+        if (_nameAddress > 0)
+        {
+            mem.WriteArrayMemory(_nameAddress, CalculateDetour(_nameAddress, NameDetourAddress, 7));
+        }
+
+        if (_prizeScaleAddress > 0)
+        {
+            mem.WriteArrayMemory(_prizeScaleAddress, CalculateDetour(_prizeScaleAddress, PrizeScaleDetourAddress, 5));
+        }
+
+        if (_sellFactorAddress > 0)
+        {
+            mem.WriteArrayMemory(_sellFactorAddress, CalculateDetour(_sellFactorAddress, SellFactorDetourAddress, 7));
+        }
+
+        if (_skillScoreMultiplierAddress > 0)
+        {
+            mem.WriteArrayMemory(_skillScoreMultiplierAddress, CalculateDetour(_skillScoreMultiplierAddress, SkillScoreMultiplierDetourAddress, 7));
+        }
+
+        if (_driftScoreMultiplierAddress > 5)
+        {
+            mem.WriteArrayMemory(_driftScoreMultiplierAddress, CalculateDetour(_driftScoreMultiplierAddress, DriftScoreMultiplierDetourAddress, 9));
+        }
+
+        if (_skillTreeWideEditAddress > 32)
+        {
+            mem.WriteArrayMemory(_skillTreeWideEditAddress, CalculateDetour(_skillTreeWideEditAddress, SkillTreeWideEditDetourAddress, 5));
+        }
+
+        if (_skillTreePerksCostAddress > 32)
+        {
+            mem.WriteArrayMemory(_skillTreePerksCostAddress, CalculateDetour(_skillTreePerksCostAddress, SkillTreePerksCostDetourAddress, 5));
+        }
+
+        if (_missionTimeScaleAddress > 0)
+        {
+            mem.WriteArrayMemory(_missionTimeScaleAddress, CalculateDetour(_missionTimeScaleAddress, MissionTimeScaleDetourAddress, 12));
+        }
+
+        if (_trailblazerTimeScaleAddress > 0)
+        {
+            mem.WriteArrayMemory(_trailblazerTimeScaleAddress, CalculateDetour(_trailblazerTimeScaleAddress, TrailblazerTimeScaleDetourAddress, 12));
+        }
+
+        if (_speedZoneMultiplierAddress > 0)
+        {
+            mem.WriteArrayMemory(_speedZoneMultiplierAddress, CalculateDetour(_speedZoneMultiplierAddress, SpeedZoneMultiplierDetourAddress, 9));
+        }
+
+        if (_unbreakableSkillScoreAddress > 0)
+        {
+            mem.WriteArrayMemory(_unbreakableSkillScoreAddress, CalculateDetour(_unbreakableSkillScoreAddress, UnbreakableSkillScoreDetourAddress, 10));
+        }
+
+        if (_raceTimeScaleAddress > 29)
+        {
+            mem.WriteArrayMemory(_raceTimeScaleAddress, CalculateDetour(_raceTimeScaleAddress, RaceTimeScaleDetourAddress, 8));
+        }
+
+        if (DangerSign1DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign1Address, CalculateDetour(_dangerSign1Address, DangerSign1DetourAddress, 8));
+        }
+
+        if (DangerSign2DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign2Address, CalculateDetour(_dangerSign2Address, DangerSign2DetourAddress, 5));
+        }
+
+        if (DangerSign3DetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_dangerSign3Address, CalculateDetour(_dangerSign3Address, DangerSign3DetourAddress, 5));
+        }
+
+        if (SpeedTrapMultiplierDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_speedTrapMultiplierAddress, CalculateDetour(_speedTrapMultiplierAddress, SpeedTrapMultiplierDetourAddress, 5));
+        }
+
+        if (_removeBuildCapAddress <= 5) return;
+        mem.WriteArrayMemory(_removeBuildCapAddress, CalculateDetour(_removeBuildCapAddress, RemoveBuildCapDetourAddress, 5));
     }
 }

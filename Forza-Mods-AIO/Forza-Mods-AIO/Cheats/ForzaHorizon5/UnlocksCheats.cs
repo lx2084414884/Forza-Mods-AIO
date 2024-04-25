@@ -3,7 +3,7 @@ using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
-public class UnlocksCheats : CheatsUtilities, ICheatsBase
+public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
 {
     private UIntPtr _creditsAddress;
     public UIntPtr CreditsDetourAddress;
@@ -30,12 +30,12 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
 
         if (_creditsAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
             
             var relativeAddress = _creditsAddress + 1;
             var relativeOffset = GetInstance().ReadMemory<int>(relativeAddress);
@@ -66,12 +66,12 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
         _xpPointsAddress = await SmartAobScan(sig) + 4;
         if (_xpPointsAddress > 4)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
             
             _xpAddress = _xpPointsAddress + 14;
             var pointsAsm = new byte[]
@@ -104,12 +104,12 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
 
         if (_spinsAddress > 28)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -134,12 +134,12 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
 
         if (_skillPointsAddress > 34)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -164,12 +164,12 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
 
         if (_seasonalAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -194,12 +194,12 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
 
         if (_seriesAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -220,7 +220,7 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
         
         if (_creditsAddress > 0)
         {
-            mem.WriteArrayMemory(_creditsAddress, new byte[] { 0x89, 0x84, 0x24, 0x80, 0x00, 0x00, 0x00 });
+            mem.WriteArrayMemory(_creditsAddress, new byte[] { 0x48, 0x8B, 0x4F, 0x08, 0x33, 0xD2 });
             Free(CreditsDetourAddress);
         }
 
@@ -251,7 +251,7 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
 
         if (_seasonalAddress > 0)
         {
-            mem.WriteArrayMemory(_skillPointsAddress, new byte[] { 0x49, 0x63, 0xC0, 0x8B, 0x44, 0x81, 0x60 });
+            mem.WriteArrayMemory(_seasonalAddress, new byte[] { 0x49, 0x63, 0xC0, 0x8B, 0x44, 0x81, 0x60 });
             Free(SeasonalDetourAddress);
         }
 
@@ -267,5 +267,82 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase
         {
             field.SetValue(this, UIntPtr.Zero);
         }
+    }
+
+    public void Revert()
+    {        
+        var mem = GetInstance();
+        
+        if (_creditsAddress > 0)
+        {
+            mem.WriteArrayMemory(_creditsAddress, new byte[] { 0x48, 0x8B, 0x4F, 0x08, 0x33, 0xD2 });
+        }
+
+        if (_xpPointsAddress > 4)
+        {
+            mem.WriteArrayMemory(_xpPointsAddress, new byte[] { 0x8B, 0x89, 0x88, 0x00, 0x00, 0x00 });
+        }
+
+        if (_xpAddress > 0)
+        {
+            mem.WriteArrayMemory(_xpAddress, new byte[] { 0x41, 0x8B, 0x87, 0x8C, 0x00, 0x00, 0x00 });
+        }
+
+        if (_spinsAddress > 28)
+        {
+            mem.WriteArrayMemory(_spinsAddress, new byte[] { 0x33, 0xD2, 0x8B, 0x5F, 0x08 });
+        }
+
+        if (_skillPointsAddress > 34)
+        {
+            // ReSharper disable once UseUtf8StringLiteral
+            mem.WriteArrayMemory(_skillPointsAddress, new byte[] { 0x33, 0xD2, 0x89, 0x5F, 0x40 });
+        }
+
+        if (_seasonalAddress > 0)
+        {
+            mem.WriteArrayMemory(_seasonalAddress, new byte[] { 0x49, 0x63, 0xC0, 0x8B, 0x44, 0x81, 0x60 });
+        }
+
+        if (_seriesAddress <= 0) return;
+        mem.WriteArrayMemory(_seriesAddress, new byte[] { 0x89, 0x59, 0x14, 0x48, 0x83, 0xC4, 0x30 });
+    }
+
+    public void Continue()
+    {
+        var mem = GetInstance();
+        
+        if (_creditsAddress > 0)
+        {
+            mem.WriteArrayMemory(_creditsAddress, CalculateDetour(_creditsAddress, CreditsDetourAddress, 6));
+        }
+
+        if (_xpPointsAddress > 4)
+        {
+            mem.WriteArrayMemory(_xpPointsAddress, CalculateDetour(_xpPointsAddress, XpPointsDetourAddress, 6));
+        }
+
+        if (_xpAddress > 0)
+        {
+            mem.WriteArrayMemory(_xpAddress, CalculateDetour(_xpAddress, XpDetourAddress, 7));
+        }
+
+        if (_spinsAddress > 28)
+        {
+            mem.WriteArrayMemory(_spinsAddress, CalculateDetour(_spinsAddress, SpinsDetourAddress, 5));
+        }
+
+        if (_skillPointsAddress > 34)
+        {
+            mem.WriteArrayMemory(_skillPointsAddress, CalculateDetour(_skillPointsAddress, SkillPointsDetourAddress, 5));
+        }
+
+        if (_seasonalAddress > 0)
+        {
+            mem.WriteArrayMemory(_seasonalAddress, CalculateDetour(_seasonalAddress, SeasonalDetourAddress, 7));
+        }
+
+        if (_seriesAddress <= 0) return;
+        mem.WriteArrayMemory(_seriesAddress, CalculateDetour(_seriesAddress, SeriesDetourAddress, 7));
     }
 }

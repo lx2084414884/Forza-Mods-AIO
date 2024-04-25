@@ -1,6 +1,6 @@
 ﻿namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
-public class CustomizationCheats : CheatsUtilities, ICheatsBase
+public class CustomizationCheats : CheatsUtilities, ICheatsBase, IRevertBase
 {
     private UIntPtr _paintAddress;
     public UIntPtr PaintDetourAddress;
@@ -23,12 +23,12 @@ public class CustomizationCheats : CheatsUtilities, ICheatsBase
         
         if (_paintAddress > 0)
         {
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3)
             {
                 await Resources.Cheats.GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -54,12 +54,12 @@ public class CustomizationCheats : CheatsUtilities, ICheatsBase
         
         if (_headlightColourAddress > 0)
         {
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3)
             {
                 await Resources.Cheats.GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -84,12 +84,12 @@ public class CustomizationCheats : CheatsUtilities, ICheatsBase
 
         if (_cleanlinessAddress > 0)
         {
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3)
             {
                 await Resources.Cheats.GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -115,12 +115,12 @@ public class CustomizationCheats : CheatsUtilities, ICheatsBase
 
         if (_forceLodAddress > 0)
         {
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3)
             {
                 await Resources.Cheats.GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3) return;
             
             var cameraPtr = await CheatForceLodCameraPtr();
             if (cameraPtr == 0) return;
@@ -169,12 +169,12 @@ public class CustomizationCheats : CheatsUtilities, ICheatsBase
 
         if (_backfireTimeAddress > 0)
         {
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3)
             {
                 await Resources.Cheats.GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (Resources.Cheats.GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (Resources.Cheats.GetClass<Bypass>().CallAddress <= 3) return;
             
             var asm = new byte[]
             {
@@ -229,5 +229,61 @@ public class CustomizationCheats : CheatsUtilities, ICheatsBase
         {
             field.SetValue(this, UIntPtr.Zero);
         }
+    }
+
+    public void Revert()
+    {
+        var mem = Resources.Memory.GetInstance();
+        
+        if (_paintAddress > 0)
+        {
+            mem.WriteArrayMemory(_paintAddress, new byte[] { 0x0F, 0x11, 0x0A, 0xC6, 0x42, 0xF0, 0x01 });
+        }
+
+        if (_headlightColourAddress > 0)
+        {
+            mem.WriteArrayMemory(_headlightColourAddress, new byte[] { 0x0F, 0x10, 0x7B, 0x50, 0xF3, 0x44, 0x0F, 0x10, 0x83, 0x84, 0x00, 0x00, 0x00 });
+        }
+
+        if (_cleanlinessAddress > 0)
+        {
+            mem.WriteArrayMemory(_cleanlinessAddress, new byte[] { 0xF3, 0x0F, 0x10, 0x88, 0x0C, 0x8A, 0x00, 0x00 });
+        }
+
+        if (_forceLodAddress > 0)
+        {
+            mem.WriteArrayMemory(_forceLodAddress, new byte[] { 0x40, 0x88, 0xB7, 0x06, 0x01, 0x00, 0x00 });
+        }
+
+        if (_backfireTimeAddress <= 0) return;
+        mem.WriteArrayMemory(_backfireTimeAddress, new byte[] { 0xF3, 0x0F, 0x10, 0x81, 0x7C, 0x3A, 0x00, 0x00 });
+    }
+
+    public void Continue()
+    {
+        var mem = Resources.Memory.GetInstance();
+        
+        if (_paintAddress > 0)
+        {
+            mem.WriteArrayMemory(_paintAddress, CalculateDetour(_paintAddress, PaintDetourAddress, 7));
+        }
+
+        if (_headlightColourAddress > 0)
+        {
+            mem.WriteArrayMemory(_headlightColourAddress, CalculateDetour(_headlightColourAddress, HeadlightColourDetourAddress, 13));
+        }
+
+        if (_cleanlinessAddress > 0)
+        {
+            mem.WriteArrayMemory(_cleanlinessAddress, CalculateDetour(_cleanlinessAddress, CleanlinessDetourAddress, 8));
+        }
+
+        if (_forceLodAddress > 0)
+        {
+            mem.WriteArrayMemory(_forceLodAddress, CalculateDetour(_forceLodAddress, ForceLodDetourAddress, 7));
+        }
+
+        if (_backfireTimeAddress <= 0) return;
+        mem.WriteArrayMemory(_backfireTimeAddress, CalculateDetour(_backfireTimeAddress, BackfireTimeDetourAddress, 8));
     }
 }

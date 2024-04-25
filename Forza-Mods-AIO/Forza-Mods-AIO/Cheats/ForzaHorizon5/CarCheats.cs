@@ -20,7 +20,7 @@ public static class CarCheatsOffsets
     public const int LocalPlayer = 0x1E7;
 }
 
-public class CarCheats : CheatsUtilities, ICheatsBase
+public class CarCheats : CheatsUtilities, ICheatsBase, IRevertBase
 {
     private UIntPtr _localPlayerHookAddress;
     public UIntPtr LocalPlayerHookDetourAddress;
@@ -46,12 +46,12 @@ public class CarCheats : CheatsUtilities, ICheatsBase
         _localPlayerHookAddress = await SmartAobScan(sig);
         if (_localPlayerHookAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
 
-            if (GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -218,7 +218,7 @@ public class CarCheats : CheatsUtilities, ICheatsBase
                 localPlayer[2], localPlayer[3], localPlayer[4], localPlayer[5], localPlayer[6], localPlayer[7], 0x48,
                 0x8B, 0x36, 0x48, 0x8D, 0xB6, 0x70, 0x05, 0x00, 0x00, 0x48, 0x39, 0xCE, 0x74, 0x1E, 0xC7, 0x81, 0xB0,
                 0xFA, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xC7, 0x81, 0xB4, 0xFA, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-                0xC7, 0x81, 0xB8, 0xFA, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x5E, 0xF3, 0x0F, 0x58, 0x81, 0xB0, 0x01,
+                0xC7, 0x81, 0xB8, 0xFA, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x5E, 0xF3, 0x0F, 0x58, 0x81, 0x54, 0x01,
                 0x00, 0x00
             };
 
@@ -239,12 +239,12 @@ public class CarCheats : CheatsUtilities, ICheatsBase
 
         if (_noWaterDragAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
 
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -316,7 +316,7 @@ public class CarCheats : CheatsUtilities, ICheatsBase
 
         if (_freezeAiAddress > 0)
         {
-            mem.WriteArrayMemory(_freezeAiAddress, new byte[] { 0xF3, 0x0F, 0x58, 0x81, 0xB0, 0x01, 0x00, 0x00 });
+            mem.WriteArrayMemory(_freezeAiAddress, new byte[] { 0xF3, 0x0F, 0x58, 0x81, 0x54, 0x01, 0x00, 0x00 });
             Free(FreezeAiDetourAddress);            
         }
 
@@ -344,5 +344,81 @@ public class CarCheats : CheatsUtilities, ICheatsBase
         {
             field.SetValue(this, UIntPtr.Zero);
         }
+    }
+
+    public void Revert()
+    {        
+        var mem = GetInstance();
+        
+        if (AccelDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_accelAddress, new byte[] { 0xF3, 0x0F, 0x10, 0x5D, 0x0C });
+        }
+
+        if (GravityDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_gravityAddress, new byte[] { 0xF3, 0x0F, 0x59, 0x4B, 0x08 });
+        }
+
+        if (_waypointAddress > 0)
+        {
+            mem.WriteArrayMemory(_waypointAddress, new byte[] { 0x0F, 0x10, 0x97, 0x30, 0x02, 0x00, 0x00 });
+        }
+
+        if (_freezeAiAddress > 0)
+        {
+            mem.WriteArrayMemory(_freezeAiAddress, new byte[] { 0xF3, 0x0F, 0x58, 0x81, 0x54, 0x01, 0x00, 0x00 });
+        }
+
+        if (_noWaterDragAddress > 0)
+        {
+            mem.WriteArrayMemory(_noWaterDragAddress, new byte[] { 0x48, 0x8B, 0xC4, 0xF3, 0x0F, 0x11, 0x48, 0x10 });
+        }
+
+        if (_noClipAddress > 0)
+        {
+            mem.WriteArrayMemory(_noClipAddress, new byte[] { 0x48, 0x8B, 0xC4, 0x4C, 0x89, 0x48, 0x20 });
+        }
+        
+        if (LocalPlayerHookDetourAddress <= 0) return;
+        mem.WriteArrayMemory(_localPlayerHookAddress, new byte[] { 0xF3, 0x0F, 0x10, 0x4F, 0x24 });
+    }
+
+    public void Continue()
+    {
+        var mem = GetInstance();
+        
+        if (AccelDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_accelAddress, CalculateDetour(_accelAddress, AccelDetourAddress, 5));
+        }
+
+        if (GravityDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_gravityAddress, CalculateDetour(_gravityAddress, GravityDetourAddress, 5));
+        }
+
+        if (_waypointAddress > 0)
+        {
+            mem.WriteArrayMemory(_waypointAddress, CalculateDetour(_waypointAddress, WaypointDetourAddress, 7));
+        }
+
+        if (_freezeAiAddress > 0)
+        {
+            mem.WriteArrayMemory(_freezeAiAddress, CalculateDetour(_freezeAiAddress, FreezeAiDetourAddress, 8));
+        }
+
+        if (_noWaterDragAddress > 0)
+        {
+            mem.WriteArrayMemory(_noWaterDragAddress, CalculateDetour(_noWaterDragAddress, NoWaterDragDetourAddress, 7));
+        }
+
+        if (_noClipAddress > 0)
+        {
+            mem.WriteArrayMemory(_noClipAddress, CalculateDetour(_noClipAddress, NoClipDetourAddress, 7));
+        }
+        
+        if (LocalPlayerHookDetourAddress <= 0) return;
+        mem.WriteArrayMemory(_localPlayerHookAddress, CalculateDetour(_localPlayerHookAddress, LocalPlayerHookDetourAddress, 5));
     }
 }

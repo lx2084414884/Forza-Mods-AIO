@@ -3,7 +3,7 @@ using static Forza_Mods_AIO.Resources.Memory;
 
 namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
-public class EnvironmentCheats : CheatsUtilities, ICheatsBase
+public class EnvironmentCheats : CheatsUtilities, ICheatsBase, IRevertBase
 {
     private UIntPtr _sunRgbAddress;
     public UIntPtr SunRgbDetourAddress;
@@ -20,12 +20,12 @@ public class EnvironmentCheats : CheatsUtilities, ICheatsBase
 
         if (_sunRgbAddress > 0)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
             
-            if (GetClass<Bypass>().CrcFuncDetourAddress <= 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -51,12 +51,12 @@ public class EnvironmentCheats : CheatsUtilities, ICheatsBase
 
         if (_timeAddress > 6)
         {
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0)
+            if (GetClass<Bypass>().CallAddress <= 3)
             {
                 await GetClass<Bypass>().DisableCrcChecks();
             }
 
-            if (GetClass<Bypass>().CrcFuncDetourAddress == 0) return;
+            if (GetClass<Bypass>().CallAddress <= 3) return;
 
             var asm = new byte[]
             {
@@ -93,5 +93,31 @@ public class EnvironmentCheats : CheatsUtilities, ICheatsBase
         {
             field.SetValue(this, UIntPtr.Zero);
         }
+    }
+
+    public void Revert()
+    {
+        var mem = GetInstance();
+        
+        if (_sunRgbAddress > 0)
+        {
+            mem.WriteArrayMemory(_sunRgbAddress, new byte[] { 0x41, 0x0F, 0x11, 0x1E, 0x48, 0x83, 0xC4, 0x20 });
+        }
+
+        if (_timeAddress <= 6) return;
+        mem.WriteArrayMemory(_timeAddress, new byte[] { 0xF2, 0x0F, 0x11, 0x43, 0x08 });
+    }
+
+    public void Continue()
+    {
+        var mem = GetInstance();
+        
+        if (_sunRgbAddress > 0)
+        {
+            mem.WriteArrayMemory(_sunRgbAddress, CalculateDetour(_sunRgbAddress, SunRgbDetourAddress, 8));
+        }
+
+        if (_timeAddress <= 6) return;
+        mem.WriteArrayMemory(_timeAddress, CalculateDetour(_timeAddress, TimeDetourAddress, 5));
     }
 }
