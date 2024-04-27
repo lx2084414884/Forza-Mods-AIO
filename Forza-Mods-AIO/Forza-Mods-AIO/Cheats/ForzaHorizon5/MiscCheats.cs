@@ -39,6 +39,8 @@ public class MiscCheats : CheatsUtilities, ICheatsBase, IRevertBase
     public UIntPtr DangerSign3DetourAddress;
     private UIntPtr _speedTrapMultiplierAddress;
     public UIntPtr SpeedTrapMultiplierDetourAddress;
+    private UIntPtr _droneModeMaxHeightMultiAddress;
+    public UIntPtr DroneModeMaxHeightMultiDetourAddress;
 
     public async Task CheatName()
     {
@@ -579,6 +581,35 @@ public class MiscCheats : CheatsUtilities, ICheatsBase, IRevertBase
         
         ShowError("Speed Trap Multiplier", sig);
     }
+
+    public async Task CheatDroneModeMaxHeightMulti()
+    {
+        _droneModeMaxHeightMultiAddress = 0;
+        DroneModeMaxHeightMultiDetourAddress = 0;
+
+        const string sig = "0F 57 ? 41 0F ? ? 73 ? 0F 28 ? 0F 57 ? F3 0F ? ? ? ? F3 0F";
+        _droneModeMaxHeightMultiAddress = await SmartAobScan(sig);
+        if (_droneModeMaxHeightMultiAddress > 0)
+        {
+            if (GetClass<Bypass>().CallAddress <= 3)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+            
+            if (GetClass<Bypass>().CallAddress <= 3) return;
+
+            var asm = new byte[]
+            {
+                0x80, 0x3D, 0x16, 0x00, 0x00, 0x00, 0x01, 0x75, 0x08, 0xF3, 0x0F, 0x59, 0x05, 0x0D, 0x00, 0x00, 0x00,
+                0x0F, 0x57, 0xC9, 0x41, 0x0F, 0x2F, 0xC2
+            };
+
+            DroneModeMaxHeightMultiDetourAddress = GetInstance().CreateDetour(_droneModeMaxHeightMultiAddress, asm, 7);
+            return;
+        }
+        
+        ShowError("Drone Mode Max Height Multi", sig);
+    }
     
     public void Cleanup()
     {
@@ -681,6 +712,12 @@ public class MiscCheats : CheatsUtilities, ICheatsBase, IRevertBase
             Free(SpeedTrapMultiplierDetourAddress);
         }
 
+        if (DroneModeMaxHeightMultiDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_droneModeMaxHeightMultiAddress, new byte[] { 0x0F, 0x57, 0xC9, 0x41, 0x0F, 0x2F, 0xC2 });
+            Free(DroneModeMaxHeightMultiDetourAddress);
+        }
+
         if (_removeBuildCapAddress <= 5) return;
         mem.WriteArrayMemory(_removeBuildCapAddress, new byte[] { 0xF3, 0x0F, 0x11, 0x43, 0x44 });
         Free(RemoveBuildCapDetourAddress);
@@ -780,6 +817,11 @@ public class MiscCheats : CheatsUtilities, ICheatsBase, IRevertBase
             mem.WriteArrayMemory(_speedTrapMultiplierAddress, new byte[] { 0x0F, 0x29, 0x44, 0x24, 0x30 });
         }
 
+        if (DroneModeMaxHeightMultiDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_droneModeMaxHeightMultiAddress, new byte[] { 0x0F, 0x57, 0xC9, 0x41, 0x0F, 0x2F, 0xC2 });
+        }
+
         if (_removeBuildCapAddress <= 5) return;
         mem.WriteArrayMemory(_removeBuildCapAddress, new byte[] { 0xF3, 0x0F, 0x11, 0x43, 0x44 });
     }
@@ -868,6 +910,11 @@ public class MiscCheats : CheatsUtilities, ICheatsBase, IRevertBase
             mem.WriteArrayMemory(_speedTrapMultiplierAddress, CalculateDetour(_speedTrapMultiplierAddress, SpeedTrapMultiplierDetourAddress, 5));
         }
 
+        if (DroneModeMaxHeightMultiDetourAddress > 0)
+        {
+            mem.WriteArrayMemory(_droneModeMaxHeightMultiAddress, CalculateDetour(_droneModeMaxHeightMultiAddress, DroneModeMaxHeightMultiDetourAddress, 7));
+        }
+        
         if (_removeBuildCapAddress <= 5) return;
         mem.WriteArrayMemory(_removeBuildCapAddress, CalculateDetour(_removeBuildCapAddress, RemoveBuildCapDetourAddress, 5));
     }

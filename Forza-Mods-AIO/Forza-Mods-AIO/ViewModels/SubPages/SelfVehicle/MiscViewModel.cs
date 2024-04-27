@@ -53,6 +53,9 @@ public partial class MiscViewModel : ObservableObject
     private bool _speedTrapMultiplierEnabled;
     
     [ObservableProperty]
+    private bool _droneModeHeightEnabled;
+    
+    [ObservableProperty]
     private int _spinSellFactorValue = 999;
     
     [ObservableProperty]
@@ -84,4 +87,7 @@ public partial class MiscViewModel : ObservableObject
     
     [ObservableProperty]
     private float _speedTrapMultiplierValue = 5f;
+    
+    [ObservableProperty]
+    private float _droneModeHeightValue = 5f;
 }
