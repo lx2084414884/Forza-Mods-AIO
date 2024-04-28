@@ -7,7 +7,6 @@ using System.Xml.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Forza_Mods_AIO.Cheats;
@@ -112,10 +111,9 @@ public partial class MainWindowViewModel : ObservableObject
         AttachedText = NotAttachedText;
 
         CurrentView = Resources.Pages.GetPage(typeof(AioInfo));
-
-        //SetupAttach();
+        
         _isInitialized = true;
-        Task task = CheckForUpdates();
+        Task _task = CheckForUpdates();
     }
 
     // update check
@@ -179,7 +177,6 @@ public partial class MainWindowViewModel : ObservableObject
     {
         public string? tag_name { get; set; }
     }
-    // end of req
 
     [RelayCommand]
     private void HandleMaximizeMinimize(object mainWindow)
