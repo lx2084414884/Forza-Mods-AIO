@@ -161,6 +161,10 @@ public partial class MainWindowViewModel : ObservableObject
                     Process.Start("explorer.exe", $"{GitUpdate}");
                     System.Environment.Exit(1);
                 }
+                else
+                {
+                    SetupAttach();
+                }
             }
 
         }
