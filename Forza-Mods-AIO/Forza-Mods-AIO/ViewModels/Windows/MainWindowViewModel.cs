@@ -111,7 +111,8 @@ public partial class MainWindowViewModel : ObservableObject
         AttachedText = NotAttachedText;
 
         CurrentView = Resources.Pages.GetPage(typeof(AioInfo));
-        
+
+        //SetupAttach();
         _isInitialized = true;
         Task _task = CheckForUpdates();
     }
@@ -154,14 +155,14 @@ public partial class MainWindowViewModel : ObservableObject
         {
             if (Version.Parse(latestGit) > assemblyVersion)
             {
-                MessageBox.Show($"Update to version {latestGit}", "Update Available", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Process.Start("explorer.exe", $"{GitUpdate}");
-                System.Environment.Exit(1);
+                MessageBoxResult result = MessageBox.Show($"Update to version {latestGit}", "Update Available", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Process.Start("explorer.exe", $"{GitUpdate}");
+                    System.Environment.Exit(1);
+                }
             }
-            else
-            {
-                SetupAttach();
-            }
+
         }
         else
         {
@@ -177,6 +178,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         public string? tag_name { get; set; }
     }
+    // end of req
 
     [RelayCommand]
     private void HandleMaximizeMinimize(object mainWindow)
