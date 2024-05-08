@@ -1,12 +1,13 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Management;
-using System.Windows;
-using System.Windows.Input;
-using System.Xml.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
+using System.Windows;
+using System.Windows.Input;
+using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Forza_Mods_AIO.Cheats;
@@ -19,7 +20,6 @@ using static System.Diagnostics.FileVersionInfo;
 using static System.IO.Path;
 using static Forza_Mods_AIO.Resources.Cheats;
 using static Forza_Mods_AIO.Resources.Memory;
-using System.Diagnostics;
 
 namespace Forza_Mods_AIO.ViewModels.Windows;
 
@@ -105,84 +105,79 @@ public partial class MainWindowViewModel : ObservableObject
         InitializeViewModel();
     }
 
-    private void InitializeViewModel()
+    private async void InitializeViewModel()
     {
         ApplicationTitle = "Forza Mods AIO";
         AttachedText = NotAttachedText;
 
         CurrentView = Resources.Pages.GetPage(typeof(AioInfo));
 
-        //SetupAttach();
+        SetupAttach();
+        await CheckForUpdates();
+        
         _isInitialized = true;
-        Task _task = CheckForUpdates();
     }
 
-    // update check
+    private const string GitHubRepoUrl = "https://api.github.com/repos/ForzaMods/Forza-Mods-AIO/releases/latest";
+    private const string GitUpdate = "https://github.com/ForzaMods/Forza-Mods-AIO/releases";
 
-    private string GitHubRepoUrl = "https://api.github.com/repos/ForzaMods/Forza-Mods-AIO/releases/latest";
-    private string GitUpdate = "https://github.com/ForzaMods/Forza-Mods-AIO/releases";
-    private string? latestGit;
-
-    public async Task CheckGit()
+    private static async Task<string?> CheckGit()
     {
-        using (var httpClient = new HttpClient())
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Opera/9.00 (Nintendo Wii; 1309-9)");
+
+        try
         {
-            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Opera/9.00 (Nintendo Wii; 1309-9)");
-
-            try
+            var response = await httpClient.GetAsync(GitHubRepoUrl);
+            if (!response.IsSuccessStatusCode)
             {
-                HttpResponseMessage response = await httpClient.GetAsync(GitHubRepoUrl);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string json = await response.Content.ReadAsStringAsync();
-                    var release = JsonSerializer.Deserialize<GithubRelease>(json);
-                    latestGit = release?.tag_name;
-                }
+                return string.Empty;
             }
-            catch (HttpRequestException ex)
+            
+            var json = await response.Content.ReadAsStringAsync();
+            var release = JsonDocument.Parse(json);
+            var root = release.RootElement;
+                
+            if (root.ValueKind != JsonValueKind.Object)
             {
-                MessageBox.Show($"Error fetching latest release: {ex.Message}", "Exception", MessageBoxButton.OK, MessageBoxImage.Information);
+                return string.Empty;
             }
+                
+            if (!root.TryGetProperty("tag_name", out var tagNameElement))
+            {
+                return string.Empty;
+            }
+                
+            return tagNameElement.ValueKind != JsonValueKind.String ? string.Empty : tagNameElement.GetString();
         }
+        catch (HttpRequestException ex)
+        {
+            MessageBox.Show($"Error fetching latest release: {ex.Message}", "Exception", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        return string.Empty;
     }
-    private void CompareVer()
+    private static void CompareVer(string? version)
     {
-        Version? assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
-        string curVersion = assemblyVersion?.ToString() ?? "Unknown";
-
-        if (latestGit != null && assemblyVersion != null)
-        {
-            if (Version.Parse(latestGit) > assemblyVersion)
-            {
-                MessageBoxResult result = MessageBox.Show($"Update to version {latestGit}", "Update Available", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
-                {
-                    Process.Start("explorer.exe", $"{GitUpdate}");
-                    System.Environment.Exit(1);
-                }
-                else
-                {
-                    SetupAttach();
-                }
-            }
-
-        }
-        else
+        var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+        if (string.IsNullOrEmpty(version) || assemblyVersion == null)
         {
             MessageBox.Show("Failed to fetch version information.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
         }
+        
+        if (Version.Parse(version) <= assemblyVersion) return;
+        var result = MessageBox.Show($"Update to version {version}", "Update Available", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (result != MessageBoxResult.Yes) return;
+        Process.Start("explorer.exe", $"{GitUpdate}");
+        Environment.Exit(1);
     }
-    public async Task CheckForUpdates()
+
+    private static async Task CheckForUpdates()
     {
-        await CheckGit();
-        CompareVer();
+        var version = await CheckGit();
+        CompareVer(version);
     }
-    private class GithubRelease
-    {
-        public string? tag_name { get; set; }
-    }
-    // end of req
 
     [RelayCommand]
     private void HandleMaximizeMinimize(object mainWindow)
