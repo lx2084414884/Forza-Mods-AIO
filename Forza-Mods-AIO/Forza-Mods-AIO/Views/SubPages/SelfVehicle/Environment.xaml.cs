@@ -26,12 +26,13 @@ public partial class Environment
         GetClass<Cheats.ForzaHorizon4.EnvironmentCheats>();
     private static CarCheats CarCheatsFh5 => GetClass<CarCheats>();
     
-    private static Vector4 ConvertUiColorToGameValues(Color uiColor)
+    private static Vector4 ConvertUiColorToGameValues(Color uiColor, double intensity)
     {
+        var fIntensity = Convert.ToSingle(intensity);
         var alpha = uiColor.A / 255f;
-        var red = uiColor.R / 255f * alpha;
-        var green = uiColor.G / 255f * alpha;
-        var blue = uiColor.B / 255f * alpha;
+        var red = uiColor.R / 255f * alpha * fIntensity;
+        var green = uiColor.G / 255f * alpha * fIntensity;
+        var blue = uiColor.B / 255f * alpha * fIntensity;
         return new Vector4(1 + red, 1 + green, 1 + blue, 1);        
     }
 
@@ -77,7 +78,7 @@ public partial class Environment
         
         if (detourAddress == 0) return;
         GetInstance().WriteMemory(detourAddress + 0x32, toggleSwitch.IsOn ? (byte)1 : (byte)0);
-        GetInstance().WriteMemory(detourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault()));
+        GetInstance().WriteMemory(detourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault(), IntensityBox.Value.GetValueOrDefault()));
     }
 
     private void Picker_OnSelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
@@ -90,7 +91,7 @@ public partial class Environment
         };
         
         if (detourAddress == 0) return;
-        GetInstance().WriteMemory(detourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault()));
+        GetInstance().WriteMemory(detourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault(), IntensityBox.Value.GetValueOrDefault()));
     }
 
     private async void PullButton_OnClick(object sender, RoutedEventArgs e)
@@ -108,7 +109,6 @@ public partial class Environment
             }
             case GameVerPlat.GameType.Fh5:
             {
-                
                 if (EnvironmentCheatsFh5.TimeDetourAddress == 0)
                 {
                     await EnvironmentCheatsFh5.CheatTime();
@@ -206,5 +206,18 @@ public partial class Environment
 
         if (CarCheatsFh5.FreezeAiDetourAddress == 0) return;
         GetInstance().WriteMemory(CarCheatsFh5.FreezeAiDetourAddress + 0x4F, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+    }
+
+    private void NumericUpDown_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+    {
+        var detourAddress = GameVerPlat.GetInstance().Type switch
+        {
+            GameVerPlat.GameType.Fh4 => EnvironmentCheatsFh4.SunRgbDetourAddress,
+            GameVerPlat.GameType.Fh5 => EnvironmentCheatsFh5.SunRgbDetourAddress,
+            _ => throw new IndexOutOfRangeException()
+        };
+        
+        if (detourAddress == 0) return;
+        GetInstance().WriteMemory(detourAddress + 0x33, ConvertUiColorToGameValues(Picker.SelectedColor.GetValueOrDefault(), IntensityBox.Value.GetValueOrDefault()));
     }
 }

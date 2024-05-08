@@ -137,6 +137,8 @@
     
     <!-- Environment.xaml -->
     <system:String x:Key="SunRgb">Sun RGB</system:String>
+    <system:String x:Key="Color">Color</system:String>
+    <system:String x:Key="Intensity">Intensity</system:String>
     <system:String x:Key="AidsMode">Aids Mode</system:String>
     <system:String x:Key="FreezeAi">Freeze Ai</system:String>
     <system:String x:Key="ManualTime">Manual Time</system:String>

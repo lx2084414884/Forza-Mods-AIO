@@ -17,6 +17,8 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
@@ -32,8 +34,32 @@
                                  SelectedColorChanged="Picker_OnSelectedColorChanged"
                                  IsEnabled="{Binding ViewModel.AreSunRgbUiElementsEnabled}"/>
                 
-                <mah:ToggleSwitch Grid.Column="1" 
-                                  Margin="5 0 0 0"
+                <Label Grid.Column="1" 
+                       Content="{DynamicResource Color}"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+                
+                <mah:NumericUpDown x:Name="IntensityBox" 
+                                   Grid.Column="2"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Left"
+                                   Value="5"
+                                   Minimum="1"
+                                   Maximum="10"
+                                   ValueChanged="NumericUpDown_OnValueChanged"
+                                   mah:ControlsHelper.CornerRadius="{StaticResource ControlCornerRadius}"
+                                   IsEnabled="{Binding ViewModel.AreSunRgbUiElementsEnabled, Mode=OneWay}"
+                                   Background="{DynamicResource MahApps.Brushes.AccentBase}"
+                                   BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}"/>
+                
+                <Label Grid.Column="3" 
+                           Content="{DynamicResource Intensity}" 
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                
+                <mah:ToggleSwitch Grid.Column="4" 
                                   VerticalAlignment="Center"
                                   MinWidth="0"
                                   FontSize="12"
