@@ -38,6 +38,12 @@ public partial class DebugWindowViewModel : ObservableObject
         await GetClass<Cheats.ForzaHorizon5.Bypass>().DisableCrcChecks();
     }
     
+    [RelayCommand]
+    private static async Task DisableEncryption()
+    {
+        await GetClass<Cheats.ForzaHorizon5.ValueEncryption>().CheatDisableValueEncryption();
+    }
+    
     public DebugWindowViewModel()
     {
         if (_isInitialized) return;

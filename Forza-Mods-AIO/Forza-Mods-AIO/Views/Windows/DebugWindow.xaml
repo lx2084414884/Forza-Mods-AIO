@@ -14,17 +14,6 @@
                  MinHeight="450" 
                  MinWidth="800">
     
-    <mah:MetroWindow.Style>
-        <Style TargetType="mah:MetroWindow">
-            <Setter Property="IsCloseButtonEnabled" Value="True" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ViewModel.CurrentDebugSession.IsAnyBreakpointHit}" Value="True">
-                    <Setter Property="IsCloseButtonEnabled" Value="False" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </mah:MetroWindow.Style>
-    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -73,6 +62,11 @@
                             Converter={StaticResource BooleanToVisibilityConverter}}"
                         Content="{DynamicResource DisableCrc}"
                         Command="{Binding ViewModel.DisableCrcCommand}"/>
+                
+                <Button Visibility="{Binding ViewModel.IsFh5, 
+                            Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Content="{DynamicResource DisableEncryption}"
+                        Command="{Binding ViewModel.DisableEncryptionCommand}"/>
                     
             </StackPanel>
         </GroupBox>

@@ -45,6 +45,7 @@
     <system:String x:Key="AntiAntiCheat">Anti Anti Cheat</system:String>
     <system:String x:Key="DisableCrt">Disable Create Remote Thread Checks</system:String>
     <system:String x:Key="DisableCrc">Disable CRC Checks</system:String>
+    <system:String x:Key="DisableEncryption">Disable Value Encryption</system:String>
     
     <!-- AioInfo.xaml - Main controls -->
     <system:String x:Key="FreeAndOpenSource">This tool is free and open source. If you paid for it you got scammed</system:String>
@@ -121,6 +122,8 @@
     <system:String x:Key="Wheelspins">Wheelspins</system:String>
     <system:String x:Key="SeriesPoints">Series Points</system:String>
     <system:String x:Key="SeasonalPoints">Seasonal Points</system:String>
+    <system:String x:Key="Accolades">Accolades</system:String>
+    <system:String x:Key="Kudos">Kudos</system:String>
     <system:String x:Key="CarXp">Car Xp</system:String>
     <system:String x:Key="CarPoints">Car Points</system:String>
     
