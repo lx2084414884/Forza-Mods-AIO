@@ -124,6 +124,7 @@
     <system:String x:Key="SeasonalPoints">Seasonal Points</system:String>
     <system:String x:Key="Accolades">Accolades</system:String>
     <system:String x:Key="Kudos">Kudos</system:String>
+    <system:String x:Key="ForzathonPoints">Forzathon Points</system:String>
     <system:String x:Key="CarXp">Car Xp</system:String>
     <system:String x:Key="CarPoints">Car Points</system:String>
     

@@ -30,6 +30,9 @@ public partial class UnlocksViewModel : ObservableObject
     private bool _isKudosEnabled;
     
     [ObservableProperty]
+    private bool _isForzathonEnabled;
+    
+    [ObservableProperty]
     private bool _isSeriesEnabled;
     
     [ObservableProperty]
@@ -52,6 +55,9 @@ public partial class UnlocksViewModel : ObservableObject
     
     [ObservableProperty]
     private int _kudosValue;
+    
+    [ObservableProperty]
+    private int _forzathonValue;
     
     [ObservableProperty]
     private int _seriesValue;
