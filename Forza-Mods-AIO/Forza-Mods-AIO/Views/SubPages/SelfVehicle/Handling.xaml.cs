@@ -94,8 +94,8 @@ public partial class Handling
         }
 
         if (CarCheatsFh5.AccelDetourAddress <= 0) return;
-        GetInstance().WriteMemory(CarCheatsFh5.AccelDetourAddress + 0x34, toggled ? (byte)1 : (byte)0);
-        GetInstance().WriteMemory(CarCheatsFh5.AccelDetourAddress + 0x35, Convert.ToSingle(ModifierValueBox.Value));  
+        GetInstance().WriteMemory(CarCheatsFh5.AccelDetourAddress + 0x58, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(CarCheatsFh5.AccelDetourAddress + 0x59, Convert.ToSingle(ModifierValueBox.Value));  
         ViewModel.IsAccelEnabled = toggled;
     }
     
@@ -107,8 +107,8 @@ public partial class Handling
         }
             
         if (CarCheatsFh5.GravityDetourAddress <= 0) return;
-        GetInstance().WriteMemory(CarCheatsFh5.GravityDetourAddress + 0x3B, toggled ? (byte)1 : (byte)0);
-        GetInstance().WriteMemory(CarCheatsFh5.GravityDetourAddress + 0x3C,Convert.ToSingle(ModifierValueBox.Value));   
+        GetInstance().WriteMemory(CarCheatsFh5.GravityDetourAddress + 0x59, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(CarCheatsFh5.GravityDetourAddress + 0x5A,Convert.ToSingle(ModifierValueBox.Value));   
         ViewModel.IsGravityEnabled = toggled;
     }
 
@@ -141,19 +141,18 @@ public partial class Handling
         {
             ViewModel.AccelValue = Convert.ToDouble(e.NewValue);
             if (CarCheatsFh5.AccelDetourAddress <= UIntPtr.Zero) return;
-            GetInstance().WriteMemory(CarCheatsFh5.AccelDetourAddress + 0x35, Convert.ToSingle(e.NewValue));  
+            GetInstance().WriteMemory(CarCheatsFh5.AccelDetourAddress + 0x59, Convert.ToSingle(e.NewValue));  
         }
         else
         {
             ViewModel.GravityValue = Convert.ToDouble(e.NewValue);
             if (CarCheatsFh5.GravityDetourAddress <= UIntPtr.Zero) return;
-            GetInstance().WriteMemory(CarCheatsFh5.GravityDetourAddress + 0x3C,Convert.ToSingle(e.NewValue));   
+            GetInstance().WriteMemory(CarCheatsFh5.GravityDetourAddress + 0x5A,Convert.ToSingle(e.NewValue));   
         }
     }
 
     private async void PullButton_OnClick(object sender, RoutedEventArgs e)
     {
-        
         if (ModifierModeBox.SelectedIndex == 0)
         {
             ViewModel.AreUiElementsEnabled = false;
@@ -164,7 +163,7 @@ public partial class Handling
             ViewModel.AreUiElementsEnabled = true;
             
             if (CarCheatsFh5.AccelDetourAddress == 0) return;
-            ViewModel.AccelValue = Convert.ToDouble(GetInstance().ReadMemory<float>(CarCheatsFh5.AccelDetourAddress + 0x39));
+            ViewModel.AccelValue = Convert.ToDouble(GetInstance().ReadMemory<float>(CarCheatsFh5.AccelDetourAddress + 0x5D));
             ModifierValueBox.Value = ViewModel.AccelValue;
         }
         else
@@ -177,7 +176,7 @@ public partial class Handling
             ViewModel.AreUiElementsEnabled = true;
 
             if (CarCheatsFh5.GravityDetourAddress == 0) return;
-            ViewModel.GravityValue = Convert.ToDouble(GetInstance().ReadMemory<float>(CarCheatsFh5.GravityDetourAddress + 0x40));
+            ViewModel.GravityValue = Convert.ToDouble(GetInstance().ReadMemory<float>(CarCheatsFh5.GravityDetourAddress + 0x5E));
             ModifierValueBox.Value = ViewModel.GravityValue;
         }
         
