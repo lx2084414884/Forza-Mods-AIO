@@ -180,7 +180,7 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void HandleMaximizeMinimize(object mainWindow)
+    public void HandleMaximizeMinimize(object mainWindow)
     {
         if (mainWindow is not MetroWindow metroWindow)
         {

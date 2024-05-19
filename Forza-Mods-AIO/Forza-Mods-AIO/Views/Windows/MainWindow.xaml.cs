@@ -54,6 +54,8 @@ public partial class MainWindow
                 {
                     SystemCommands.MaximizeWindow(this);
                 }
+
+                ViewModel.HandleMaximizeMinimize(this);
                 break;
             }
             case "3":
