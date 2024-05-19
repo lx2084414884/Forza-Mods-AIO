@@ -5,19 +5,20 @@ namespace Forza_Mods_AIO.Cheats.ForzaHorizon5;
 
 public static class CarCheatsOffsets
 {
-    public const int VelEnabled = 0x1C9;
-    public const int VelBoost = 0x1CA;
-    public const int VelLimit = 0x1CE;
-    public const int BrakeHackEnabled = 0x1D2;
-    public const int BrakeHackBoost = 0x1D3;
-    public const int StopAllWheelsEnabled = 0x1D7;
-    public const int JumpHackEnabled = 0x1D8;
-    public const int JumpHackBoost = 0x1D9;
-    public const int WheelspeedEnabled = 0x1DD;
-    public const int WheelspeedMode = 0x1DE;
-    public const int WheelspeedBoost = 0x1DF;
-    public const int WheelspeedLimit = 0x1E3;
-    public const int LocalPlayer = 0x1E7;
+    private const int HookSize = 0x1C9;
+    public const int VelEnabled = HookSize;
+    public const int VelBoost = HookSize + 1;
+    public const int VelLimit = HookSize + 5;
+    public const int BrakeHackEnabled = HookSize + 9;
+    public const int BrakeHackBoost = HookSize + 10;
+    public const int StopAllWheelsEnabled = HookSize + 14;
+    public const int JumpHackEnabled = HookSize + 15;
+    public const int JumpHackBoost = HookSize + 16;
+    public const int WheelspeedEnabled = HookSize + 20;
+    public const int WheelspeedMode = HookSize + 21;
+    public const int WheelspeedBoost = HookSize + 22;
+    public const int WheelspeedLimit = HookSize + 26;
+    public const int LocalPlayer = HookSize + 30;
 }
 
 public class CarCheats : CheatsUtilities, ICheatsBase, IRevertBase
