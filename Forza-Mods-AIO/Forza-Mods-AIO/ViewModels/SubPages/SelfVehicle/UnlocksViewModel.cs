@@ -24,6 +24,12 @@ public partial class UnlocksViewModel : ObservableObject
     private bool _isWheelspinsEnabled;
     
     [ObservableProperty]
+    private bool _isAccoladesEnabled;
+    
+    [ObservableProperty]
+    private bool _isKudosEnabled;
+    
+    [ObservableProperty]
     private bool _isSeriesEnabled;
     
     [ObservableProperty]
@@ -40,6 +46,12 @@ public partial class UnlocksViewModel : ObservableObject
     
     [ObservableProperty]
     private int _wheelspinsValue;
+    
+    [ObservableProperty]
+    private int _accoladesValue;
+    
+    [ObservableProperty]
+    private int _kudosValue;
     
     [ObservableProperty]
     private int _seriesValue;

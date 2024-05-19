@@ -85,10 +85,20 @@ public partial class Unlocks
             }
             case 4:
             {
-                await Series(toggleSwitch.IsOn);
+                await Accolades(toggleSwitch.IsOn);
                 break;
             }
             case 5:
+            {
+                await Kudos(toggleSwitch.IsOn);
+                break;
+            }
+            case 6:
+            {
+                await Series(toggleSwitch.IsOn);
+                break;
+            }
+            case 7:
             {
                 await Seasonal(toggleSwitch.IsOn);
                 break;
@@ -203,6 +213,32 @@ public partial class Unlocks
         GetInstance().WriteMemory(UnlocksCheatsFh4.SkillPointsDetourAddress + 0x1D, Convert.ToInt32(ValueBox.Value));  
         ViewModel.IsSkillPointsEnabled = toggled;
     }
+
+    private async Task Kudos(bool toggled)
+    {
+        if (UnlocksCheatsFh5.BxmlEncryptionDetourAddress == 0)
+        {
+            await UnlocksCheatsFh5.CheatBxmlEncryption();
+        }
+
+        if (UnlocksCheatsFh5.BxmlEncryptionDetourAddress <= 0) return;
+        GetInstance().WriteMemory(UnlocksCheatsFh5.BxmlEncryptionDetourAddress + 0x3C, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(UnlocksCheatsFh5.BxmlEncryptionDetourAddress + 0x3D, Convert.ToInt32(ValueBox.Value));  
+        ViewModel.IsKudosEnabled = toggled;
+    }
+
+    private async Task Accolades(bool toggled)
+    {
+        if (UnlocksCheatsFh5.BxmlEncryptionDetourAddress == 0)
+        {
+            await UnlocksCheatsFh5.CheatBxmlEncryption();
+        }
+
+        if (UnlocksCheatsFh5.BxmlEncryptionDetourAddress <= 0) return;
+        GetInstance().WriteMemory(UnlocksCheatsFh5.BxmlEncryptionDetourAddress + 0x41, toggled ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(UnlocksCheatsFh5.BxmlEncryptionDetourAddress + 0x42, Convert.ToInt32(ValueBox.Value));  
+        ViewModel.IsAccoladesEnabled = toggled;
+    }
     
     private async Task Seasonal(bool toggled)
     {
@@ -273,11 +309,23 @@ public partial class Unlocks
             }
             case 4:
             {
+                ValueBox.Value = ViewModel.AccoladesValue;
+                UnlockSwitch.IsOn = ViewModel.IsAccoladesEnabled;
+                break;
+            }
+            case 5:
+            {
+                ValueBox.Value = ViewModel.KudosValue;
+                UnlockSwitch.IsOn = ViewModel.IsKudosEnabled;
+                break;
+            }
+            case 6:
+            {
                 ValueBox.Value = ViewModel.SeriesValue;
                 UnlockSwitch.IsOn = ViewModel.IsSeriesEnabled;
                 break;
             }
-            case 5:
+            case 7:
             {
                 ValueBox.Value = ViewModel.SeasonalValue;
                 UnlockSwitch.IsOn = ViewModel.IsSeasonalEnabled;
@@ -354,12 +402,26 @@ public partial class Unlocks
             }
             case 4:
             {
+                ViewModel.AccoladesValue = Convert.ToInt32(ValueBox.Value);
+                if (UnlocksCheatsFh5.BxmlEncryptionDetourAddress <= 0) return;
+                GetInstance().WriteMemory(UnlocksCheatsFh5.BxmlEncryptionDetourAddress + 0x42, Convert.ToInt32(ValueBox.Value));  
+                break;
+            }
+            case 5:
+            {
+                ViewModel.KudosValue = Convert.ToInt32(ValueBox.Value);
+                if (UnlocksCheatsFh5.BxmlEncryptionDetourAddress <= 0) return;
+                GetInstance().WriteMemory(UnlocksCheatsFh5.BxmlEncryptionDetourAddress + 0x3D, Convert.ToInt32(ValueBox.Value));  
+                break;
+            }
+            case 6:
+            {
                 ViewModel.SeriesValue = Convert.ToInt32(ValueBox.Value);
                 if (UnlocksCheatsFh5.SeriesDetourAddress <= 0) return;
                 GetInstance().WriteMemory(UnlocksCheatsFh5.SeriesDetourAddress + 0x1C, Convert.ToInt32(ValueBox.Value));  
                 break;
             }
-            case 5:
+            case 7:
             {
                 ViewModel.SeasonalValue = Convert.ToInt32(ValueBox.Value);
                 if (UnlocksCheatsFh5.SeasonalDetourAddress <= 0) return;

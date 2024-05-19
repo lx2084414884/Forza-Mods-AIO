@@ -19,6 +19,8 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
     public UIntPtr SeriesDetourAddress;
     private UIntPtr _seasonalAddress;
     public UIntPtr SeasonalDetourAddress;
+    private UIntPtr _bxmlEncryptionAddress;
+    public UIntPtr BxmlEncryptionDetourAddress;
 
     public async Task CheatCredits()
     {
@@ -153,6 +155,38 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
         
         ShowError("Skill points", sig);
     }
+    
+    public async Task CheatBxmlEncryption()
+    {
+        _bxmlEncryptionAddress = 0;
+        BxmlEncryptionDetourAddress = 0;
+
+        const string sig = "48 89 5C 24 08 57 48 83 EC 20 48 8B 79 08 33 D2 48";
+        _bxmlEncryptionAddress = await SmartAobScan(sig) + 29;
+
+        if (_bxmlEncryptionAddress > 29)
+        {
+            if (GetClass<Bypass>().CallAddress <= 3)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+            
+            if (GetClass<Bypass>().CallAddress <= 3) return;
+
+            var asm = new byte[]
+            {
+                0x80, 0x3D, 0x35, 0x00, 0x00, 0x00, 0x01, 0x75, 0x0F, 0x83, 0x7F, 0x20, 0x07, 0x75, 0x09, 0x8B, 0x15,
+                0x28, 0x00, 0x00, 0x00, 0x89, 0x57, 0x28, 0x80, 0x3D, 0x22, 0x00, 0x00, 0x00, 0x01, 0x75, 0x11, 0x83,
+                0x7F, 0x20, 0x01, 0x75, 0x0B, 0x8B, 0x15, 0x15, 0x00, 0x00, 0x00, 0xD1, 0xEA, 0x89, 0x57, 0x28, 0x31,
+                0xD2, 0x8B, 0x5F, 0x28
+            };
+
+            BxmlEncryptionDetourAddress = GetInstance().CreateDetour(_bxmlEncryptionAddress, asm, 5);
+            return;
+        }
+        
+        ShowError("Bxml Encryption", sig);
+    }
 
     public async Task CheatSeasonal()
     {
@@ -242,6 +276,12 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
             Free(SpinsDetourAddress);
         }
 
+        if (_bxmlEncryptionAddress > 29)
+        {
+            mem.WriteArrayMemory(_bxmlEncryptionAddress, new byte[] { 0x33, 0xD2, 0x8B, 0x5F, 0x28 });
+            Free(BxmlEncryptionDetourAddress);
+        }
+
         if (_skillPointsAddress > 34)
         {
             // ReSharper disable once UseUtf8StringLiteral
@@ -293,6 +333,12 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
             mem.WriteArrayMemory(_spinsAddress, new byte[] { 0x33, 0xD2, 0x8B, 0x5F, 0x08 });
         }
 
+        if (_bxmlEncryptionAddress > 29)
+        {
+            // ReSharper disable once UseUtf8StringLiteral
+            mem.WriteArrayMemory(_bxmlEncryptionAddress, new byte[] { 0x33, 0xD2, 0x8B, 0x5F, 0x28 });
+        }
+        
         if (_skillPointsAddress > 34)
         {
             // ReSharper disable once UseUtf8StringLiteral
@@ -332,6 +378,11 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
             mem.WriteArrayMemory(_spinsAddress, CalculateDetour(_spinsAddress, SpinsDetourAddress, 5));
         }
 
+        if (_bxmlEncryptionAddress > 29)
+        {
+            mem.WriteArrayMemory(_bxmlEncryptionAddress, CalculateDetour(_bxmlEncryptionAddress, BxmlEncryptionDetourAddress, 5));
+        }
+        
         if (_skillPointsAddress > 34)
         {
             mem.WriteArrayMemory(_skillPointsAddress, CalculateDetour(_skillPointsAddress, SkillPointsDetourAddress, 5));
