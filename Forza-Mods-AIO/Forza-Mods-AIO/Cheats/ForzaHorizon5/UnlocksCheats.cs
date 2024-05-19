@@ -21,6 +21,10 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
     public UIntPtr SeasonalDetourAddress;
     private UIntPtr _bxmlEncryptionAddress;
     public UIntPtr BxmlEncryptionDetourAddress;
+    private UIntPtr _clothing1Address;
+    public UIntPtr Clothing1DetourAddress;
+    private UIntPtr _clothing2Address;
+    public UIntPtr Clothing2DetourAddress;
 
     public async Task CheatCredits()
     {
@@ -248,6 +252,64 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
         
         ShowError("Series points", sig);
     }
+
+    public async Task CheatClothing()
+    {
+        _clothing1Address = 0;
+        Clothing1DetourAddress = 0;
+        _clothing2Address = 0;
+        Clothing2DetourAddress = 0;
+
+        const string clothing1Sig = "48 8B ? ? ? 8B 88 ? ? ? ? 39 4B";
+        _clothing1Address = await SmartAobScan(clothing1Sig) + 5;
+
+        if (_clothing1Address > 5)
+        {
+            if (GetClass<Bypass>().CallAddress <= 3)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+            
+            if (GetClass<Bypass>().CallAddress <= 3) return;
+            
+            var asm = new byte[]
+            {
+                0x8B, 0x88, 0xA4, 0x00, 0x00, 0x00, 0x83, 0x3D, 0x0C, 0x00, 0x00, 0x00, 0x01, 0x0F, 0x44, 0x0D, 0x05,
+                0x00, 0x00, 0x00
+            };
+
+            Clothing1DetourAddress = GetInstance().CreateDetour(_clothing1Address, asm, 6);
+        }
+        else
+        {
+            ShowError("Free Clothing", clothing1Sig);
+            return;
+        }
+        
+        const string clothing2Sig = "8B B8 ? ? ? ? 0F B6 ? ? ? ? ? 49 8B";
+        _clothing2Address = await SmartAobScan(clothing2Sig);
+        if (_clothing2Address > 0)
+        {
+            if (GetClass<Bypass>().CallAddress <= 3)
+            {
+                await GetClass<Bypass>().DisableCrcChecks();
+            }
+            
+            if (GetClass<Bypass>().CallAddress <= 3) return;
+
+            var asm = new byte[]
+            {
+                0x8B, 0xB8, 0xA4, 0x00, 0x00, 0x00, 0x83, 0x3D, 0x0C, 0x00, 0x00, 0x00, 0x01, 0x0F, 0x44, 0x3D, 0x05,
+                0x00, 0x00, 0x00
+            };
+
+            Clothing2DetourAddress = GetInstance().CreateDetour(_clothing2Address, asm, 6);
+        }
+        else
+        {
+            ShowError("Free Clothing", clothing2Sig);
+        }
+    }
     
     public void Cleanup()
     {
@@ -288,6 +350,18 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
             // ReSharper disable once UseUtf8StringLiteral
             mem.WriteArrayMemory(_skillPointsAddress, new byte[] { 0x33, 0xD2, 0x89, 0x5F, 0x40 });
             Free(SkillPointsDetourAddress);
+        }
+
+        if (_clothing1Address > 5)
+        {
+            mem.WriteArrayMemory(_clothing1Address, new byte[] { 0x8B, 0x88, 0xA4, 0x00,0x00, 0x00 });
+            Free(Clothing1DetourAddress);
+        }
+
+        if (_clothing2Address > 0)
+        {
+            mem.WriteArrayMemory(_clothing2Address, new byte[] { 0x8B, 0xB8, 0xA4, 0x00,0x00, 0x00 });
+            Free(Clothing2DetourAddress);
         }
 
         if (_seasonalAddress > 0)
@@ -346,6 +420,16 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
             mem.WriteArrayMemory(_skillPointsAddress, new byte[] { 0x33, 0xD2, 0x89, 0x5F, 0x40 });
         }
 
+        if (_clothing1Address > 5)
+        {
+            mem.WriteArrayMemory(_clothing1Address, new byte[] { 0x8B, 0x88, 0xA4, 0x00,0x00, 0x00 });
+        }
+
+        if (_clothing2Address > 0)
+        {
+            mem.WriteArrayMemory(_clothing2Address, new byte[] { 0x8B, 0xB8, 0xA4, 0x00,0x00, 0x00 });
+        }
+        
         if (_seasonalAddress > 0)
         {
             mem.WriteArrayMemory(_seasonalAddress, new byte[] { 0x49, 0x63, 0xC0, 0x8B, 0x44, 0x81, 0x60 });
@@ -389,6 +473,16 @@ public class UnlocksCheats : CheatsUtilities, ICheatsBase, IRevertBase
             mem.WriteArrayMemory(_skillPointsAddress, CalculateDetour(_skillPointsAddress, SkillPointsDetourAddress, 5));
         }
 
+        if (_clothing1Address > 5)
+        {
+            mem.WriteArrayMemory(_clothing1Address, CalculateDetour(_clothing1Address, Clothing1DetourAddress, 6));
+        }
+
+        if (_clothing2Address > 0)
+        {
+            mem.WriteArrayMemory(_clothing2Address, CalculateDetour(_clothing2Address, Clothing2DetourAddress, 6));
+        }
+        
         if (_seasonalAddress > 0)
         {
             mem.WriteArrayMemory(_seasonalAddress, CalculateDetour(_seasonalAddress, SeasonalDetourAddress, 7));

@@ -461,4 +461,26 @@ public partial class Unlocks
             }
         }
     }
+
+    private async void FreeClothingSwitch_OnToggled(object sender, RoutedEventArgs e)
+    {
+        if (sender is not ToggleSwitch toggleSwitch)
+        {
+            return;
+        }
+
+        toggleSwitch.IsEnabled = false;
+
+        if (UnlocksCheatsFh5.Clothing1DetourAddress == 0 || UnlocksCheatsFh5.Clothing2DetourAddress == 0)
+        {
+            await UnlocksCheatsFh5.CheatClothing();
+        }
+        
+        toggleSwitch.IsEnabled = true;
+        
+        if (UnlocksCheatsFh5.Clothing1DetourAddress == 0 || UnlocksCheatsFh5.Clothing2DetourAddress == 0) return;
+
+        GetInstance().WriteMemory(UnlocksCheatsFh5.Clothing1DetourAddress + 0x19, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+        GetInstance().WriteMemory(UnlocksCheatsFh5.Clothing2DetourAddress + 0x19, toggleSwitch.IsOn ? (byte)1 : (byte)0);
+    }
 }
