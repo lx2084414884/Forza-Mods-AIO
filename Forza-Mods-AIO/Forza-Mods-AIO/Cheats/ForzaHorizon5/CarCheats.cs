@@ -115,7 +115,7 @@ public class CarCheats : CheatsUtilities, ICheatsBase, IRevertBase
             return (nuint)(scanResult + relative + 0x7);
         }
 
-        ShowError("Name Ptr", sig);
+        ShowError("Race Ptr", sig);
         return 0;
     }
     

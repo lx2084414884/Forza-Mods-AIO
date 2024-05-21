@@ -9,6 +9,7 @@
                  mc:Ignorable="d"
                  d:DataContext="{d:DesignInstance local:MainWindow,IsDesignTimeCreatable=True}"
                  Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+                 Icon="../../Resources/Square150x150Logo.scale-200.png"
                  Height="450"
                  Width="800"
                  MinHeight="450"

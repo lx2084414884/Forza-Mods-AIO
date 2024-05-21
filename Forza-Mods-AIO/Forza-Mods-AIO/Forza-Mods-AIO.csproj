@@ -7,12 +7,9 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
-        <Company>05f4b3f8-c3a5-4e39-8053-b3e9b8dea19e</Company>
-        <Product>3e9b38ef-ff4a-40cc-8fcb-17e5f57be01b</Product>
-        <AssemblyTitle>c4b6aec6-f89e-4586-948a-4da13e37426c</AssemblyTitle>
         <IsPackable>false</IsPackable>
-        <AssemblyVersion>2.2.0.0</AssemblyVersion>
-        <FileVersion>2.2.0.0</FileVersion>
+        <AssemblyVersion>2.3.0.0</AssemblyVersion>
+        <FileVersion>2.3.0.0</FileVersion>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>AIO.snk</AssemblyOriginatorKeyFile>
         <PublicSign>true</PublicSign>
@@ -20,7 +17,7 @@
         <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DebugType>portable</DebugType>
-        <AssemblyName>1ef2b27c-8c4e-4d95-befe-488921eeffb1</AssemblyName>
+        <AssemblyName>EFCD0733-A3F8-4176-83BE-175FC882D984</AssemblyName>
         <PlatformTarget>x64</PlatformTarget>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
@@ -36,6 +33,11 @@
       <Reference Include="Memory">
         <HintPath>Resources\External\Memory.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Square150x150Logo.scale-200.png" />
+      <Resource Include="Resources\Square150x150Logo.scale-200.png" />
     </ItemGroup>
 
 </Project>
