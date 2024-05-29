@@ -198,7 +198,7 @@ public class PhotomodeCheats : CheatsUtilities, ICheatsBase, IRevertBase
 
         if (_noHeightLimitAddress > 0)
         {
-            mem.WriteArrayMemory(_noHeightLimitAddress, CalculateDetour(_noHeightLimitAddress, NoClipDetourAddress, 8));
+            mem.WriteArrayMemory(_noHeightLimitAddress, CalculateDetour(_noHeightLimitAddress, NoHeightLimitDetourAddress, 8));
         }
         
         if (_increasedZoomAddress <= 0) return;
